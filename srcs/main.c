@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/12 20:13:25 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/12 20:43:07 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,16 @@ void	handle_error_sdl(char *message)
 	exit(0);
 }
 
+void	handle_error(char *message)
+{
+	ft_printf("Visualizer: %s\n", message);
+	exit(0);
+}
+
 void	init(t_sdl *sdl)
 {
+	if (!(sdl = (t_sdl*)ft_memalloc(sizeof(t_sdl))))
+		handle_error("Malloc failed");
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		handle_error_sdl("SDL could not initialize!");
 	sdl->window = SDL_CreateWindow("Lem-in", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
