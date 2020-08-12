@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/12 20:43:07 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/12 20:57:42 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ void	handle_error(char *message)
 
 void	init(t_sdl *sdl)
 {
-	if (!(sdl = (t_sdl*)ft_memalloc(sizeof(t_sdl))))
-		handle_error("Malloc failed");
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		handle_error_sdl("SDL could not initialize!");
 	sdl->window = SDL_CreateWindow("Lem-in", 100, 100, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -64,18 +62,21 @@ int	main(void)
 {
 	t_sdl *sdl;
 
-	sdl = NULL;
+	if (!(sdl = (t_sdl*)ft_memalloc(sizeof(t_sdl))))
+		handle_error("Malloc failed");
 	init(sdl);
+	SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
+	SDL_RenderClear(sdl->renderer);
 	while (1)
 	{
 		if (SDL_PollEvent(&sdl->e))
 		{
 			if (sdl->e.type == SDL_QUIT)
 				close_sdl(sdl);
-			// else if (sdl->e.type == SDL_KEYDOWN)
-			// {
-
-			// }
+			 else if (sdl->e.type == SDL_KEYDOWN)
+			 {
+				SDL_Quit();
+			}
 		}
 		SDL_RenderPresent(sdl->renderer);
 	}
