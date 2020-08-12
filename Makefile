@@ -6,7 +6,7 @@
 #    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/12 19:37:01 by sadawi           ###   ########.fr        #
+#    Updated: 2020/08/12 20:17:00 by sadawi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,11 @@ NAME = wolf3d
 CFILES = main.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
-INCLUDES = -I includes -I libft/includes
+INCLUDES = -I includes -I libft/includes -I SDL2/SDL2/include \
+-I SDL2/SDL2_image/include
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make -C libft/ fclean && make -C libft/
+LIBS = -lSDL2 -lSDL2_image -L SDL2/SDL2/lib -L SDL2/SDL2_image/lib
 
 all:
 	@$(RUN_LIB)
@@ -28,7 +30,7 @@ $(NAME): $(SRCS) libft/
 	@gcc $(FLAGS) $(INCLUDES) -c $(SRCS)
 	@mkdir objs
 	@mv $(notdir $(SRCS:.c=.o)) objs
-	@gcc $(FLAGS) $(INCLUDES) -o $(NAME) $(OBJS) libft/libft.a
+	@gcc $(FLAGS) $(INCLUDES) -o $(NAME) $(OBJS) $(LIBS) libft/libft.a
 	@echo $(NAME) compiled succesfully!
 
 lib:
@@ -40,7 +42,7 @@ noflags:
 	@gcc $(INCLUDES) -c $(SRCS)
 	@mkdir objs
 	@mv $(notdir $(SRCS:.c=.o)) objs
-	@gcc $(INCLUDES) -o $(NAME) $(OBJS) libft/libft.a
+	@gcc $(INCLUDES) -o $(NAME) $(OBJS) libft/libft.a $(LIBS)
 	@echo $(NAME) compiled without flags succesfully!
 
 clean:
