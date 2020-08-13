@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 16:50:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 17:39:17 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,6 +360,10 @@ int		main(int argc, char **argv)
 	t_sdl *sdl;
 	double moveSpeed = 0.1;
 	double rotSpeed = 0.05;
+	int up = 0;
+	int down = 0;
+	int right = 0;
+	int left = 0;
 
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
@@ -376,36 +380,63 @@ int		main(int argc, char **argv)
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
-				{
-					double oldDirX = sdl->player->dirX;
-					sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
-					sdl->player->dirY = oldDirX * sin(-rotSpeed) + sdl->player->dirY * cos(-rotSpeed);
-					double oldPlaneX = sdl->player->planeX;
-					sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
-					sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
-				}
+					right = 1;
 				if (sdl->e.key.keysym.sym == SDLK_LEFT)
-				{
-					double oldDirX = sdl->player->dirX;
-					sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
-					sdl->player->dirY = oldDirX * sin(rotSpeed) + sdl->player->dirY * cos(rotSpeed);
-					double oldPlaneX = sdl->player->planeX;
-					sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
-					sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
-				}
+					left = 1;
 				if (sdl->e.key.keysym.sym == SDLK_UP)
-				{
-					if(sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0) sdl->player->posX += sdl->player->dirX * moveSpeed;
-     				if(sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0) sdl->player->posY += sdl->player->dirY * moveSpeed;
-				}
+					up = 1;
+				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+					down = 1;
 			}
+			else if (sdl->e.type == SDL_KEYUP)
+			{
+				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
+					right = 0;
+				if (sdl->e.key.keysym.sym == SDLK_LEFT)
+					left = 0;
+				if (sdl->e.key.keysym.sym == SDLK_UP)
+					up = 0;
+				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+					down = 0;
+			}
+		}
+		if (right)
+		{
+			double oldDirX = sdl->player->dirX;
+			sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
+			sdl->player->dirY = oldDirX * sin(-rotSpeed) + sdl->player->dirY * cos(-rotSpeed);
+			double oldPlaneX = sdl->player->planeX;
+			sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
+			sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
+		}
+		if (left)
+		{
+			double oldDirX = sdl->player->dirX;
+			sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
+			sdl->player->dirY = oldDirX * sin(rotSpeed) + sdl->player->dirY * cos(rotSpeed);
+			double oldPlaneX = sdl->player->planeX;
+			sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
+			sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
+		}
+		if (up)
+		{
+			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX += sdl->player->dirX * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0)
+				sdl->player->posY += sdl->player->dirY * moveSpeed;
+		}
+		if (down)
+		{
+			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX -= sdl->player->dirX * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
+				sdl->player->posY -= sdl->player->dirY * moveSpeed;
 		}
 		draw_map(sdl);
 		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
 		SDL_RenderClear(sdl->renderer);
 		draw_map(sdl);
 		SDL_RenderPresent(sdl->renderer);
-		ft_printf("%f, %f\n", sdl->player->dirX, sdl->player->dirY);
 	}
 	close_sdl(sdl);
 }
