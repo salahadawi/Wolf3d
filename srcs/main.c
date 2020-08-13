@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/12 20:57:42 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 12:51:34 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 
 void	close_sdl(t_sdl *sdl)
 {
-	// for (t_texture *tmp = sdl->textures->next; sdl->textures; tmp = sdl->textures->next)
-	// {
-	// 	free(sdl->textures);
-	// 	sdl->textures = tmp;
-	// }
 	SDL_DestroyRenderer(sdl->renderer);
 	sdl->renderer = NULL;
 	SDL_FreeSurface(sdl->image);
