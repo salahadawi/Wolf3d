@@ -25,6 +25,7 @@
 
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
+#define PLAYER_SPAWN_POINT -1
 
 
 typedef struct		s_map
@@ -43,6 +44,8 @@ typedef struct		s_player
 	double			dirY;
 	double			planeX;
 	double			planeY;
+	double			spawn_x;
+	double			spawn_y;
 }					t_player;
 
 typedef struct		s_sdl
@@ -53,6 +56,7 @@ typedef struct		s_sdl
 	SDL_Event		e;
 	int				img_flags;
 	SDL_Renderer	*renderer;
+	int				p_spawn_point;
 	//t_texture		*textures;
 	t_map			*map;
 	t_player		*player;

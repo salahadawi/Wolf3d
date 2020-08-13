@@ -223,14 +223,42 @@ void	print_map(t_map *s_map)
 	}
 }
 
-t_player	*init_player()
+void		set_spawn_point(t_player *player, t_map *map)
+{
+	int	col;
+	int	row;
+
+	col = 0;
+	row = 0;
+	while (row < map->rows)
+	{
+		col = 0;
+		while (col < map->cols)
+		{
+
+			if (map->map[row][col] == PLAYER_SPAWN_POINT)
+			{
+				player->spawn_x = (double)col;
+				player->spawn_y = (double)row;
+				return;
+			}
+			col++;
+		}
+		row++;
+	}
+	handle_error("No spawn point found in map.");
+}
+
+t_player	*init_player(t_map *map)
 {
 	t_player *player;
 
 	if (!(player = (t_player*)ft_memalloc(sizeof(*player))))
 		handle_error("Malloc failed");
-	player->posX = 5;
-	player->posY = 5;
+	set_spawn_point(player, map);
+	player->posX = player->spawn_x;
+	player->posY = player->spawn_y;
+	ft_printf("%f %f\n", player->spawn_x, player->spawn_y);
 	player->dirX = -1;
 	player->dirY = 0;
 	player->planeX = 0;
@@ -363,7 +391,7 @@ int		main(int argc, char **argv)
 
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
-	sdl->player = init_player();
+	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
 	while (1)
 	{
