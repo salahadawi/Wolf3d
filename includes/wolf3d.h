@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 15:42:19 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 16:20:40 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
 # include <math.h>
-# include <SDL2/SDL.h>
-# include <SDL2/SDL_image.h>
+# include "SDL.h"
+# include "SDL_image.h"
 
 typedef struct		s_map
 {

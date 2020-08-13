@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
+#    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/12 20:23:40 by sadawi           ###   ########.fr        #
+#    Updated: 2020/08/13 16:42:14 by alcohen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,10 @@ NAME = wolf3d
 CFILES = main.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
-INCLUDES = -I includes -I libft/includes -I SDL2/SDL2/include \
--I SDL2/SDL2_image/include
+INCLUDES = -I ~/.brew/Cellar/sdl2/2.0.12_1/include/SDL2/ -I ~/.brew/Cellar/sdl2_image/2.0.5/include/SDL2 -I libft/includes -I includes
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
-LIBS = -lSDL2 -lSDL2_image -L SDL2/SDL2/lib -L SDL2/SDL2_image/lib
+LIBS = -lSDL2 -lSDL2_image -L ~/.brew/Cellar/sdl2/2.0.12_1/lib/ -L ~/.brew/Cellar/sdl2_image/2.0.5/lib/
 
 all:
 	@$(RUN_LIB)
