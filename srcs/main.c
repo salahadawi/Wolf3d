@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 16:34:14 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/13 16:50:59 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,8 +241,10 @@ t_player	*init_player()
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
 	SDL_SetRenderDrawColor(sdl->renderer, color / 256 / 256 % 256, color / 256 % 256, color % 256, 0xFF);
-	while (y[0] < y[1])
-		SDL_RenderDrawPoint(sdl->renderer, x, y[0]++);
+	// while (y[0] < y[1])
+	// 	SDL_RenderDrawPoint(sdl->renderer, x, y[0]++);
+	SDL_RenderDrawLine(sdl->renderer, x, y[0], x, y[1]);
+	//write pixels to buffer then save them all to renderer at the same tiime
 }
 
 void	draw_map(t_sdl *sdl)
@@ -339,7 +341,13 @@ void	draw_map(t_sdl *sdl)
       }
 
       //give x and y sides different brightness
-      if(side == 1) {color = color / 2;}
+	  if (side == 0)
+	  	if (mapX - sdl->player->posX > 0)
+		  	color = color / 4;
+	if (side == 1)
+	  	if (mapY - sdl->player->posY > 0)
+		  	color = color / 5;
+		if(side == 1) {color = color / 2;}
 
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
@@ -367,7 +375,7 @@ int		main(int argc, char **argv)
 			{
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
-				else if (sdl->e.key.keysym.sym == SDLK_RIGHT)
+				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
 				{
 					double oldDirX = sdl->player->dirX;
 					sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
@@ -376,7 +384,7 @@ int		main(int argc, char **argv)
 					sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
 					sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
 				}
-				else if (sdl->e.key.keysym.sym == SDLK_LEFT)
+				if (sdl->e.key.keysym.sym == SDLK_LEFT)
 				{
 					double oldDirX = sdl->player->dirX;
 					sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
@@ -385,7 +393,7 @@ int		main(int argc, char **argv)
 					sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
 					sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
 				}
-				else if (sdl->e.key.keysym.sym == SDLK_UP)
+				if (sdl->e.key.keysym.sym == SDLK_UP)
 				{
 					if(sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0) sdl->player->posX += sdl->player->dirX * moveSpeed;
      				if(sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0) sdl->player->posY += sdl->player->dirY * moveSpeed;
@@ -397,6 +405,7 @@ int		main(int argc, char **argv)
 		SDL_RenderClear(sdl->renderer);
 		draw_map(sdl);
 		SDL_RenderPresent(sdl->renderer);
+		ft_printf("%f, %f\n", sdl->player->dirX, sdl->player->dirY);
 	}
 	close_sdl(sdl);
 }
