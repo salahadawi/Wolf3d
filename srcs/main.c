@@ -34,7 +34,7 @@ void	handle_error_sdl(char *message)
 
 void	handle_error(char *message)
 {
-	ft_printf("Visualizer: %s\n", message);
+	ft_printf("Error: %s\n", message);
 	exit(0);
 }
 
