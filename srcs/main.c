@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 17:59:45 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 18:10:28 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -474,6 +474,7 @@ int		main(int argc, char **argv)
 		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
 		SDL_RenderClear(sdl->renderer);
 		render_texture(sdl, sdl->textures, 0, 0);
+		render_texture(sdl, sdl->textures, 0, SCREEN_HEIGHT / 2);
 		draw_map(sdl);
 		SDL_RenderPresent(sdl->renderer);
 	}
