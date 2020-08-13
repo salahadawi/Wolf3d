@@ -13,8 +13,9 @@
 #ifndef WOLF3D_H
 # define WOLF3D_H
 
-# define SCREEN_WIDTH 1024
-# define SCREEN_HEIGHT 680
+# define SCREEN_WIDTH	1024
+# define SCREEN_HEIGHT	680
+# define PROGRAM_TITLE	"Wolf3D"
 
 # include "../libft/includes/libft.h"
 # include <fcntl.h>

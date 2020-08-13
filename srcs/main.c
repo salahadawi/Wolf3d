@@ -46,7 +46,7 @@ t_sdl	*init(void)
 		handle_error("Malloc failed");
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		handle_error_sdl("SDL could not initialize!");
-	sdl->window = SDL_CreateWindow("wolf3d", 100, 100,
+	sdl->window = SDL_CreateWindow(PROGRAM_TITLE, 100, 100,
 		SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (!sdl->window)
 		handle_error_sdl("Window could not be created!");
