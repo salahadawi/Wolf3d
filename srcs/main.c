@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 17:39:17 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 17:59:45 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,6 +355,43 @@ void	draw_map(t_sdl *sdl)
     }
 }
 
+t_texture	*create_texture(void)
+{
+	t_texture *texture;
+
+	if (!(texture = (t_texture*)ft_memalloc(sizeof(t_texture))))
+		handle_error("Malloc failed.");
+	texture->texture = NULL;
+	texture->width = 0;
+	texture->height = 0;
+	texture->next = NULL;
+	return (texture);
+}
+
+void	texture_load_from_file(t_sdl *sdl, t_texture **texture, char *path)
+{
+	SDL_Surface *loaded_surface;
+	SDL_Texture	*new_texture;
+
+	*texture = create_texture();
+	if (!(loaded_surface = IMG_Load(path)))
+		handle_error_sdl("Unable to load image!");
+	if (!(new_texture = SDL_CreateTextureFromSurface(sdl->renderer, loaded_surface)))
+		handle_error_sdl("Unable to create texture from surface!");
+	(*texture)->texture = new_texture;
+	(*texture)->width = SCREEN_WIDTH;
+	(*texture)->height = SCREEN_HEIGHT;
+	SDL_FreeSurface(loaded_surface);
+}
+
+void	render_texture(t_sdl *sdl, t_texture *texture, int x, int y)
+{
+	SDL_Rect render_quad;
+
+	render_quad = (SDL_Rect){x, y, texture->width, texture->height};
+	SDL_RenderCopy(sdl->renderer, texture->texture, NULL, &render_quad);
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
@@ -369,6 +406,7 @@ int		main(int argc, char **argv)
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player();
 	print_map(sdl->map);
+	texture_load_from_file(sdl, &sdl->textures, "alex.jpeg");
 	while (1)
 	{
 		if (SDL_PollEvent(&sdl->e))
@@ -435,6 +473,7 @@ int		main(int argc, char **argv)
 		draw_map(sdl);
 		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
 		SDL_RenderClear(sdl->renderer);
+		render_texture(sdl, sdl->textures, 0, 0);
 		draw_map(sdl);
 		SDL_RenderPresent(sdl->renderer);
 	}

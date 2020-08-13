@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 16:20:40 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/13 17:47:30 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 
+typedef	struct			s_texture
+{
+	SDL_Texture			*texture;
+	int					width;
+	int					height;
+	struct s_texture	*next;
+}						t_texture;
 
 typedef struct		s_map
 {
@@ -53,7 +60,7 @@ typedef struct		s_sdl
 	SDL_Event		e;
 	int				img_flags;
 	SDL_Renderer	*renderer;
-	//t_texture		*textures;
+	t_texture		*textures;
 	t_map			*map;
 	t_player		*player;
 }					t_sdl;
