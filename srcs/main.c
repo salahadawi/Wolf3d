@@ -68,9 +68,10 @@ int	main(void)
 		{
 			if (sdl->e.type == SDL_QUIT)
 				close_sdl(sdl);
-			 else if (sdl->e.type == SDL_KEYDOWN)
-			 {
-				SDL_Quit();
+			else if (sdl->e.type == SDL_KEYDOWN)
+			{
+				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
+					break ;
 			}
 		}
 		SDL_RenderPresent(sdl->renderer);
