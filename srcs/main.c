@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 16:50:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/13 18:10:28 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,16 +383,58 @@ void	draw_map(t_sdl *sdl)
     }
 }
 
+t_texture	*create_texture(void)
+{
+	t_texture *texture;
+
+	if (!(texture = (t_texture*)ft_memalloc(sizeof(t_texture))))
+		handle_error("Malloc failed.");
+	texture->texture = NULL;
+	texture->width = 0;
+	texture->height = 0;
+	texture->next = NULL;
+	return (texture);
+}
+
+void	texture_load_from_file(t_sdl *sdl, t_texture **texture, char *path)
+{
+	SDL_Surface *loaded_surface;
+	SDL_Texture	*new_texture;
+
+	*texture = create_texture();
+	if (!(loaded_surface = IMG_Load(path)))
+		handle_error_sdl("Unable to load image!");
+	if (!(new_texture = SDL_CreateTextureFromSurface(sdl->renderer, loaded_surface)))
+		handle_error_sdl("Unable to create texture from surface!");
+	(*texture)->texture = new_texture;
+	(*texture)->width = SCREEN_WIDTH;
+	(*texture)->height = SCREEN_HEIGHT;
+	SDL_FreeSurface(loaded_surface);
+}
+
+void	render_texture(t_sdl *sdl, t_texture *texture, int x, int y)
+{
+	SDL_Rect render_quad;
+
+	render_quad = (SDL_Rect){x, y, texture->width, texture->height};
+	SDL_RenderCopy(sdl->renderer, texture->texture, NULL, &render_quad);
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
 	double moveSpeed = 0.1;
 	double rotSpeed = 0.05;
+	int up = 0;
+	int down = 0;
+	int right = 0;
+	int left = 0;
 
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
+	texture_load_from_file(sdl, &sdl->textures, "alex.jpeg");
 	while (1)
 	{
 		if (SDL_PollEvent(&sdl->e))
@@ -404,36 +446,65 @@ int		main(int argc, char **argv)
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
-				{
-					double oldDirX = sdl->player->dirX;
-					sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
-					sdl->player->dirY = oldDirX * sin(-rotSpeed) + sdl->player->dirY * cos(-rotSpeed);
-					double oldPlaneX = sdl->player->planeX;
-					sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
-					sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
-				}
+					right = 1;
 				if (sdl->e.key.keysym.sym == SDLK_LEFT)
-				{
-					double oldDirX = sdl->player->dirX;
-					sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
-					sdl->player->dirY = oldDirX * sin(rotSpeed) + sdl->player->dirY * cos(rotSpeed);
-					double oldPlaneX = sdl->player->planeX;
-					sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
-					sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
-				}
+					left = 1;
 				if (sdl->e.key.keysym.sym == SDLK_UP)
-				{
-					if(sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0) sdl->player->posX += sdl->player->dirX * moveSpeed;
-     				if(sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0) sdl->player->posY += sdl->player->dirY * moveSpeed;
-				}
+					up = 1;
+				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+					down = 1;
 			}
+			else if (sdl->e.type == SDL_KEYUP)
+			{
+				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
+					right = 0;
+				if (sdl->e.key.keysym.sym == SDLK_LEFT)
+					left = 0;
+				if (sdl->e.key.keysym.sym == SDLK_UP)
+					up = 0;
+				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+					down = 0;
+			}
+		}
+		if (right)
+		{
+			double oldDirX = sdl->player->dirX;
+			sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
+			sdl->player->dirY = oldDirX * sin(-rotSpeed) + sdl->player->dirY * cos(-rotSpeed);
+			double oldPlaneX = sdl->player->planeX;
+			sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
+			sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
+		}
+		if (left)
+		{
+			double oldDirX = sdl->player->dirX;
+			sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
+			sdl->player->dirY = oldDirX * sin(rotSpeed) + sdl->player->dirY * cos(rotSpeed);
+			double oldPlaneX = sdl->player->planeX;
+			sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
+			sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
+		}
+		if (up)
+		{
+			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX += sdl->player->dirX * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0)
+				sdl->player->posY += sdl->player->dirY * moveSpeed;
+		}
+		if (down)
+		{
+			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX -= sdl->player->dirX * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
+				sdl->player->posY -= sdl->player->dirY * moveSpeed;
 		}
 		draw_map(sdl);
 		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
 		SDL_RenderClear(sdl->renderer);
+		render_texture(sdl, sdl->textures, 0, 0);
+		render_texture(sdl, sdl->textures, 0, SCREEN_HEIGHT / 2);
 		draw_map(sdl);
 		SDL_RenderPresent(sdl->renderer);
-		ft_printf("%f, %f\n", sdl->player->dirX, sdl->player->dirY);
 	}
 	close_sdl(sdl);
 }

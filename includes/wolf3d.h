@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 16:20:40 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/13 18:37:39 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,13 @@
 #define STEP_DIST_Y		1
 #define PLAYER_SPAWN_POINT -1
 
+typedef	struct			s_texture
+{
+	SDL_Texture			*texture;
+	int					width;
+	int					height;
+	struct s_texture	*next;
+}						t_texture;
 
 typedef struct		s_map
 {
@@ -57,7 +64,7 @@ typedef struct		s_sdl
 	int				img_flags;
 	SDL_Renderer	*renderer;
 	int				p_spawn_point;
-	//t_texture		*textures;
+	t_texture		*textures;
 	t_map			*map;
 	t_player		*player;
 }					t_sdl;
