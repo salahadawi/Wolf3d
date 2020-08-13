@@ -277,22 +277,22 @@ void	draw_map(t_sdl *sdl)
       //calculate step and initial sideDist
       if(rayDirX < 0)
       {
-        stepX = -1;
+        stepX = -STEP_DIST_X;
         sideDistX = (sdl->player->posX - mapX) * deltaDistX;
       }
       else
       {
-        stepX = 1;
+        stepX = STEP_DIST_X;
         sideDistX = (mapX + 1.0 - sdl->player->posX) * deltaDistX;
       }
       if(rayDirY < 0)
       {
-        stepY = -1;
+        stepY = -STEP_DIST_Y;
         sideDistY = (sdl->player->posY - mapY) * deltaDistY;
       }
       else
       {
-        stepY = 1;
+        stepY = STEP_DIST_Y;
         sideDistY = (mapY + 1.0 - sdl->player->posY) * deltaDistY;
       }
       //perform DDA

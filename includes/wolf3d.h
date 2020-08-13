@@ -23,6 +23,10 @@
 # include "SDL.h"
 # include "SDL_image.h"
 
+#define STEP_DIST_X		1
+#define STEP_DIST_Y		1
+
+
 typedef struct		s_map
 {
 	char			*name;
