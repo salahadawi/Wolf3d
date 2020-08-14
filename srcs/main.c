@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 17:08:38 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 17:11:12 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,16 +389,16 @@ int		main(int argc, char **argv)
 		}
 		if (up)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] == 0)
+			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
 				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)] == 0)
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)] < 1)
 				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
 		}
 		if (down)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] == 0)
+			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
 				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)] == 0)
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)] < 1)
 				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
 		}
 		//clear_surface(sdl->screen);
