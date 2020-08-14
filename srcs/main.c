@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 13:48:01 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 13:51:09 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	close_sdl(t_sdl *sdl)
 
 void	handle_error_sdl(char *message)
 {
-	ft_printf("Visualizer: %s SDL_ERROR %s\n", message, SDL_GetError());
+	ft_printf("SDL Error: %s SDL_ERROR %s\n", message, SDL_GetError());
 	exit(0);
 }
 
