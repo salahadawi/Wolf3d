@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 15:58:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 16:03:27 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,7 +370,7 @@ int		main(int argc, char **argv)
 		draw_map(sdl);
 		draw_fps(sdl);
 		SDL_UpdateWindowSurface(sdl->window);
-		clear_surface(sdl->screen);
+		//clear_surface(sdl->screen);
 	}
 	close_sdl(sdl);
 }
