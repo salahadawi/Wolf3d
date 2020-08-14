@@ -305,6 +305,10 @@ int		main(int argc, char **argv)
 	print_map(sdl->map);
 	while (1)
 	{
+		draw_background(sdl);
+		draw_map(sdl);
+		draw_fps(sdl);
+		SDL_UpdateWindowSurface(sdl->window);
 		if (SDL_PollEvent(&sdl->e))
 		{
 			if (sdl->e.type == SDL_QUIT)
@@ -366,10 +370,6 @@ int		main(int argc, char **argv)
 			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
 				sdl->player->posY -= sdl->player->dirY * moveSpeed;
 		}
-		draw_background(sdl);
-		draw_map(sdl);
-		draw_fps(sdl);
-		SDL_UpdateWindowSurface(sdl->window);
 		//clear_surface(sdl->screen);
 	}
 	close_sdl(sdl);
