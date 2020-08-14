@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
+#    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/14 15:33:01 by sadawi           ###   ########.fr        #
+#    Updated: 2020/08/14 17:21:19 by alcohen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,12 +18,14 @@ INCLUDES = -I libft/includes -I includes \
 -I ~/.brew/Cellar/sdl2/2.0.12_1/include/SDL2/ \
 -I ~/.brew/Cellar/sdl2_image/2.0.5/include/SDL2 \
 -I ~/.brew/Cellar/sdl2_ttf/2.0.15/include/SDL2
+INCLUDES_LINUX = `sdl2-config --cflags --libs` -I libft/includes -I includes
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
 LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf \
 -L ~/.brew/Cellar/sdl2/2.0.12_1/lib/ \
 -L ~/.brew/Cellar/sdl2_image/2.0.5/lib/ \
 -L ~/.brew/Cellar/sdl2_ttf/2.0.15/lib/
+LIBS_LINUX = -lm -lSDL2 -lSDL2_image -lSDL2_ttf
 
 all:
 	@$(RUN_LIB)
@@ -49,6 +51,15 @@ noflags:
 	@mv $(notdir $(SRCS:.c=.o)) objs
 	@gcc $(INCLUDES) -o $(NAME) $(OBJS) libft/libft.a $(LIBS)
 	@echo $(NAME) compiled without flags succesfully!
+
+linux:
+	@rm -rf objs
+	@echo Compiling $(NAME) without flags...
+	@gcc $(INCLUDES_LINUX) -c $(SRCS)
+	@mkdir objs
+	@mv $(notdir $(SRCS:.c=.o)) objs
+	@gcc $(INCLUDES_LINUX) -o $(NAME) $(OBJS) libft/libft.a $(LIBS_LINUX)
+	@echo $(NAME) linux compiled without flags succesfully!
 
 clean:
 	@/bin/rm -f $(OBJS)
