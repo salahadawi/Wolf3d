@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
+#    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/13 16:42:14 by alcohen          ###   ########.fr        #
+#    Updated: 2020/08/14 13:48:26 by sadawi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
-CFILES = main.c
+CFILES = main.c handle_map.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
 INCLUDES = -I ~/.brew/Cellar/sdl2/2.0.12_1/include/SDL2/ -I ~/.brew/Cellar/sdl2_image/2.0.5/include/SDL2 -I libft/includes -I includes

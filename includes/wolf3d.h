@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 18:37:39 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/14 13:49:35 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,11 @@ typedef struct		s_sdl
 	t_map			*map;
 	t_player		*player;
 }					t_sdl;
+
+void	handle_arguments(t_sdl *sdl, int argc, char **argv);
+
+void	handle_error(char *message);
+
+void	print_map(t_map *map);
 
 #endif
