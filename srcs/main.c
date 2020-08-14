@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 16:53:13 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 17:08:38 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,13 +287,29 @@ void	update_player_speed(t_sdl *sdl)
 {
 	sdl->time_prev = sdl->time_now;
 	sdl->time_now = clock();
-	if (!sdl->time_prev)
-	{
-		sdl->time_prev = sdl->time_now;
-		return;
-	}
 	sdl->player->move_speed = (sdl->time_now - sdl->time_prev) / 1000 / 150;
 	sdl->player->rotation_speed = (sdl->time_now - sdl->time_prev) / 1000 / 250;
+}
+
+void	draw_loading_screen(t_sdl *sdl)
+{
+	int i;
+	int	pixel_amount;
+	int color;
+
+	i = 0;
+	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
+	color = 0xBBBBBB;
+	while (i < pixel_amount)
+	{
+		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH, color);
+		i++;
+	}
+	if (!sdl->text_surface)
+		sdl->text_surface = TTF_RenderText_Solid(sdl->font, "Loading...",
+			(SDL_Color){255, 255, 255, 0});
+	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, &(SDL_Rect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 50, 50});
+	sdl->time_prev = sdl->time_now;
 }
 
 int		main(int argc, char **argv)
@@ -303,6 +319,7 @@ int		main(int argc, char **argv)
 	int down = 0;
 	int right = 0;
 	int left = 0;
+	int	loading = 1;
 
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
@@ -310,10 +327,18 @@ int		main(int argc, char **argv)
 	print_map(sdl->map);
 	while (1)
 	{
-		update_player_speed(sdl);
-		draw_background(sdl);
-		draw_map(sdl);
-		draw_fps(sdl);
+		if (loading)
+		{
+			draw_loading_screen(sdl);
+			loading = 0;
+		}
+		else
+		{
+			update_player_speed(sdl);
+			draw_background(sdl);
+			draw_map(sdl);
+			draw_fps(sdl);
+		}
 		SDL_UpdateWindowSurface(sdl->window);
 		if (SDL_PollEvent(&sdl->e))
 		{
