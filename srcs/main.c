@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 19:02:01 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 19:03:17 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,6 +339,9 @@ void modify_pixel_remove(SDL_Surface *screen, int x, int y, int color)
 	blue = blue < 0 ? 0 : blue;
 	*pixel = blue + green * 256 + red * 256 * 256;
 }
+
+//Takes as parameter the function to use, to either draw a certain color or modify an already
+//existing pixel
 
 void	draw_box(SDL_Surface *screen, int xywh[4], int color, void (*f)(SDL_Surface*, int, int, int))
 {
