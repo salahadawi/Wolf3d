@@ -262,6 +262,33 @@ void	draw_background(t_sdl *sdl)
 	}
 }
 
+void	draw_fps(t_sdl *sdl)
+{
+	static int		i;
+	static double	time_prev;
+	double			time_now;
+	static char		*text;
+
+	time_now = clock();
+	if (!time_prev)
+	{
+		time_prev = time_now;
+		return;
+	}
+	if (i++ % 50 == 0)
+	{
+		if (sdl->text_surface)
+			SDL_FreeSurface(sdl->text_surface);
+		if (text)
+			free(text);
+		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC / (time_now - time_prev));
+		sdl->text_surface = TTF_RenderText_Shaded(sdl->font, text,
+		(SDL_Color){255, 255, 255, 0}, (SDL_Color){0, 0, 0, 0});
+	}
+	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, NULL);
+	time_prev = time_now;
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
@@ -341,6 +368,7 @@ int		main(int argc, char **argv)
 		}
 		draw_background(sdl);
 		draw_map(sdl);
+		draw_fps(sdl);
 		SDL_UpdateWindowSurface(sdl->window);
 		clear_surface(sdl->screen);
 	}
