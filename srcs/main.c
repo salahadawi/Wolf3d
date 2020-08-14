@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/13 18:10:28 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 13:18:35 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,15 @@ t_sdl	*init(void)
 		SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (!sdl->window)
 		handle_error_sdl("Window could not be created!");
+	// sdl->screen = SDL_GetWindowSurface(sdl->window);
+	// if (!sdl->screen)
+	// 	handle_error_sdl("aa");
 	if (!(sdl->renderer = SDL_CreateRenderer(sdl->window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
 		handle_error_sdl("Renderer could not be created!");
 	sdl->img_flags = IMG_INIT_PNG;
 	if (!(IMG_Init(sdl->img_flags) & sdl->img_flags))
 		handle_error_sdl("SDL image could not initialize!");
-	sdl->screen = SDL_GetWindowSurface(sdl->window);
 	return (sdl);
 }
 
@@ -271,7 +273,24 @@ void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 	SDL_SetRenderDrawColor(sdl->renderer, color / 256 / 256 % 256, color / 256 % 256, color % 256, 0xFF);
 	// while (y[0] < y[1])
 	// 	SDL_RenderDrawPoint(sdl->renderer, x, y[0]++);
-	SDL_RenderDrawLine(sdl->renderer, x, y[0], x, y[1]);
+	 static SDL_Texture *texture;
+	if (!texture)
+	 texture = SDL_CreateTexture(sdl->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 1, 8);
+	//SDL_SetTextureColorMod(texture, 255, 255, 0);
+    Uint32 pixels[4];
+	pixels[0] = color;
+	pixels[1] = color/2;
+	pixels[2] = color/3;
+	pixels[3] = color/4;
+	//SDL_SetTextureColorMod(texture, color / 256 / 256 % 256, color / 256 % 256, color % 256 );
+   	//SDL_UpdateTexture(texture, NULL, pixels, 4);
+	SDL_Rect render_quad;
+
+	render_quad = (SDL_Rect){x, y[0], 1, y[1] - y[0]};
+	SDL_RenderCopy(sdl->renderer, texture, NULL, &render_quad);
+	//SDL_RenderDrawLine(sdl->renderer, x, y[0], x, y[1]);
+
+	// SDL_DestroyTexture(texture);
 	//write pixels to buffer then save them all to renderer at the same tiime
 }
 
@@ -435,6 +454,7 @@ int		main(int argc, char **argv)
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
 	texture_load_from_file(sdl, &sdl->textures, "alex.jpeg");
+
 	while (1)
 	{
 		if (SDL_PollEvent(&sdl->e))
@@ -498,9 +518,9 @@ int		main(int argc, char **argv)
 			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
 				sdl->player->posY -= sdl->player->dirY * moveSpeed;
 		}
-		draw_map(sdl);
-		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
-		SDL_RenderClear(sdl->renderer);
+		//draw_map(sdl);
+		//SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
+		//SDL_RenderClear(sdl->renderer);
 		render_texture(sdl, sdl->textures, 0, 0);
 		render_texture(sdl, sdl->textures, 0, SCREEN_HEIGHT / 2);
 		draw_map(sdl);
