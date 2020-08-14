@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 15:21:32 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 15:55:36 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <math.h>
 # include "SDL.h"
 # include "SDL_image.h"
+# include "SDL_ttf.h"
+# include <time.h>
 
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
@@ -66,6 +68,8 @@ typedef struct		s_sdl
 	t_texture		*textures;
 	t_map			*map;
 	t_player		*player;
+	TTF_Font		*font;
+	SDL_Surface		*text_surface;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);

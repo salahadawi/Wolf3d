@@ -6,7 +6,7 @@
 #    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/14 13:48:26 by sadawi           ###   ########.fr        #
+#    Updated: 2020/08/14 15:33:01 by sadawi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,16 @@ NAME = wolf3d
 CFILES = main.c handle_map.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
-INCLUDES = -I ~/.brew/Cellar/sdl2/2.0.12_1/include/SDL2/ -I ~/.brew/Cellar/sdl2_image/2.0.5/include/SDL2 -I libft/includes -I includes
+INCLUDES = -I libft/includes -I includes \
+-I ~/.brew/Cellar/sdl2/2.0.12_1/include/SDL2/ \
+-I ~/.brew/Cellar/sdl2_image/2.0.5/include/SDL2 \
+-I ~/.brew/Cellar/sdl2_ttf/2.0.15/include/SDL2
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
-LIBS = -lSDL2 -lSDL2_image -L ~/.brew/Cellar/sdl2/2.0.12_1/lib/ -L ~/.brew/Cellar/sdl2_image/2.0.5/lib/
+LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf \
+-L ~/.brew/Cellar/sdl2/2.0.12_1/lib/ \
+-L ~/.brew/Cellar/sdl2_image/2.0.5/lib/ \
+-L ~/.brew/Cellar/sdl2_ttf/2.0.15/lib/
 
 all:
 	@$(RUN_LIB)
