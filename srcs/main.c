@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 17:11:12 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 18:17:45 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,16 +213,33 @@ void	draw_map(t_sdl *sdl)
       }
 
       //give x and y sides different brightness
-	  if (side == 0)
-	  	if (mapX - sdl->player->posX > 0)
-		  	color = color / 4;
+	double wallX; //where exactly the wall was hit
+	if (side == 0)
+	{
+		if (mapX - sdl->player->posX > 0)
+		{
+			color = sdl->tex[(int)(sdl->player->posX) % (TEX_WIDTH / 4)];
+		} else {
+			wallX = sdl->player->posY + perpWallDist * rayDirY;
+		}
+	}
 	if (side == 1)
-	  	if (mapY - sdl->player->posY > 0)
-		  	color = color / 5;
-		if(side == 1) {color = color / 2;}
+	{
+		if (mapY - sdl->player->posY > 0)
+			color = color / 5;
+		color = color / 2;
+		wallX = sdl->player->posX + perpWallDist * rayDirX;
+	}
 
+	//x coordinate on the texture
+	int texX = (int)(wallX * (double)TEX_WIDTH);
+	
+	if(side == 0 && rayDirX > 0) texX = TEX_WIDTH - texX - 1;
+	if(side == 1 && rayDirY < 0) texX = TEX_WIDTH - texX - 1;
+	
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
+	  color = sdl->tex[texX];
 	  draw_vertical_line(sdl, x, (int[2]){drawStart, drawEnd}, color);
     }
 }
@@ -312,6 +329,20 @@ void	draw_loading_screen(t_sdl *sdl)
 	sdl->time_prev = sdl->time_now;
 }
 
+void	create_textures(t_sdl *sdl)
+{
+	unsigned int	*tex;
+
+	tex = (unsigned int *)malloc(sizeof(unsigned int) * TEX_HEIGHT * TEX_WIDTH);
+	for(int x = 0; x < TEX_WIDTH; x++)
+	for(int y = 0; y < TEX_HEIGHT; y++)
+	{
+		int xorcolor = (x * 256 / TEX_WIDTH) ^ (y * 256 / TEX_HEIGHT);
+		tex[TEX_WIDTH * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
+	}
+	sdl->tex = tex;
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
@@ -325,6 +356,7 @@ int		main(int argc, char **argv)
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
+	create_textures(sdl);
 	while (1)
 	{
 		if (loading)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 16:43:10 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 18:17:50 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 #define PLAYER_SPAWN_POINT -1
+#define TEX_WIDTH 64
+#define TEX_HEIGHT 64
 
 typedef	struct			s_texture
 {
@@ -74,6 +76,7 @@ typedef struct		s_sdl
 	SDL_Surface		*text_surface;
 	double			time_prev;
 	double			time_now;
+	unsigned int	*tex;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);
