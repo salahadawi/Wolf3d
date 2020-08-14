@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 18:48:23 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 19:02:01 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,10 +233,10 @@ void	draw_map(t_sdl *sdl)
 
 	//x coordinate on the texture
 	int texX = (int)(wallX * (double)TEX_WIDTH);
-	
+
 	if(side == 0 && rayDirX > 0) texX = TEX_WIDTH - texX - 1;
 	if(side == 1 && rayDirY < 0) texX = TEX_WIDTH - texX - 1;
-	
+
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
 	  color = sdl->tex[texX];
@@ -340,9 +340,27 @@ void modify_pixel_remove(SDL_Surface *screen, int x, int y, int color)
 	*pixel = blue + green * 256 + red * 256 * 256;
 }
 
+void	draw_box(SDL_Surface *screen, int xywh[4], int color, void (*f)(SDL_Surface*, int, int, int))
+{
+	int x;
+	int y;
+	int width;
+	int height;
+
+	x = xywh[0];
+	y = xywh[1];
+	height = xywh[3];
+	while (height--)
+	{
+		width = xywh[2];
+		while (width--)
+			(*f)(screen, x + width, y + height, color);
+	}
+}
+
 void	draw_minimap(t_sdl *sdl)
 {
-	//unfinished
+	draw_box(sdl->screen, (int[4]){30, 30, 200, 200}, 0x999999,  &modify_pixel_remove);
 }
 
 void	update_player_speed(t_sdl *sdl)
