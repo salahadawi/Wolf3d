@@ -282,24 +282,24 @@ int		main(int argc, char **argv)
 			{
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
-				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
+				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
 					right = 1;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT)
+				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
 					left = 1;
-				if (sdl->e.key.keysym.sym == SDLK_UP)
+				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
 					up = 1;
-				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
 					down = 1;
 			}
 			else if (sdl->e.type == SDL_KEYUP)
 			{
-				if (sdl->e.key.keysym.sym == SDLK_RIGHT)
+				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
 					right = 0;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT)
+				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
 					left = 0;
-				if (sdl->e.key.keysym.sym == SDLK_UP)
+				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
 					up = 0;
-				if (sdl->e.key.keysym.sym == SDLK_DOWN)
+				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
 					down = 0;
 			}
 		}
