@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 15:21:43 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 15:58:59 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	close_sdl(t_sdl *sdl)
 {
-	SDL_DestroyRenderer(sdl->renderer);
-	sdl->renderer = NULL;
+	TTF_CloseFont(sdl->font);
+	TTF_Quit();
 	SDL_DestroyWindow(sdl->window);
 	sdl->window = NULL;
 	free(sdl);
@@ -54,6 +54,10 @@ t_sdl	*init(void)
 	sdl->screen = SDL_GetWindowSurface(sdl->window);
 	if (!sdl->screen)
 		handle_error_sdl("Surface could not be created!");
+	if (TTF_Init() == -1)
+		handle_error("SDL_ttf could not initialize!");
+	if (!(sdl->font = TTF_OpenFont("fonts/Action_Man.ttf", 20)))
+		handle_error_sdl("Failed to load font!");
 	return (sdl);
 }
 
