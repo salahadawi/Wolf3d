@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 19:03:17 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 19:22:45 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,6 +364,9 @@ void	draw_box(SDL_Surface *screen, int xywh[4], int color, void (*f)(SDL_Surface
 void	draw_minimap(t_sdl *sdl)
 {
 	draw_box(sdl->screen, (int[4]){30, 30, 200, 200}, 0x999999,  &modify_pixel_remove);
+	draw_box(sdl->screen, (int[4]){30 + 190 * ((sdl->player->posX -1) / sdl->map->cols),
+	30 + 190 * ((sdl->player->posY - 1) / sdl->map->rows),
+	5, 5}, 0xFF0000,  &put_pixel);
 }
 
 void	update_player_speed(t_sdl *sdl)
@@ -501,6 +504,7 @@ int		main(int argc, char **argv)
 				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
 		}
 		//clear_surface(sdl->screen);
+		//ft_printf("%f %f\n", sdl->player->posX, sdl->player->posY);
 	}
 	close_sdl(sdl);
 }
