@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 13:51:09 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 15:21:43 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	close_sdl(t_sdl *sdl)
 {
 	SDL_DestroyRenderer(sdl->renderer);
 	sdl->renderer = NULL;
-	SDL_FreeSurface(sdl->image);
-	sdl->image = NULL;
 	SDL_DestroyWindow(sdl->window);
 	sdl->window = NULL;
 	free(sdl);
@@ -50,17 +48,14 @@ t_sdl	*init(void)
 		SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (!sdl->window)
 		handle_error_sdl("Window could not be created!");
-	if (!(sdl->renderer = SDL_CreateRenderer(sdl->window, -1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)))
-		handle_error_sdl("Renderer could not be created!");
 	sdl->img_flags = IMG_INIT_PNG;
 	if (!(IMG_Init(sdl->img_flags) & sdl->img_flags))
 		handle_error_sdl("SDL image could not initialize!");
 	sdl->screen = SDL_GetWindowSurface(sdl->window);
+	if (!sdl->screen)
+		handle_error_sdl("Surface could not be created!");
 	return (sdl);
 }
-
-
 
 void		set_spawn_point(t_player *player, t_map *map)
 {
@@ -105,13 +100,17 @@ t_player	*init_player(t_map *map)
 	return (player);
 }
 
+void put_pixel(SDL_Surface *screen, int x, int y, int color) {
+	int *pixel;
+
+	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
+	*pixel = color;
+}
+
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
-	SDL_SetRenderDrawColor(sdl->renderer, color / 256 / 256 % 256, color / 256 % 256, color % 256, 0xFF);
-	// while (y[0] < y[1])
-	// 	SDL_RenderDrawPoint(sdl->renderer, x, y[0]++);
-	SDL_RenderDrawLine(sdl->renderer, x, y[0], x, y[1]);
-	//write pixels to buffer then save them all to renderer at the same tiime
+	while (y[0] < y[1])
+		put_pixel(sdl->screen, x, y[0]++, color);
 }
 
 void	draw_map(t_sdl *sdl)
@@ -222,41 +221,41 @@ void	draw_map(t_sdl *sdl)
     }
 }
 
-t_texture	*create_texture(void)
+void	clear_surface(SDL_Surface *surface)
 {
-	t_texture *texture;
+	int i;
+	int	pixel_amount;
 
-	if (!(texture = (t_texture*)ft_memalloc(sizeof(t_texture))))
-		handle_error("Malloc failed.");
-	texture->texture = NULL;
-	texture->width = 0;
-	texture->height = 0;
-	texture->next = NULL;
-	return (texture);
+	i = 0;
+	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
+	while (i < pixel_amount)
+	{
+		put_pixel(surface, i % SCREEN_WIDTH, i / SCREEN_WIDTH, 0);
+		i++;
+	}
 }
 
-void	texture_load_from_file(t_sdl *sdl, t_texture **texture, char *path)
+void	draw_background(t_sdl *sdl)
 {
-	SDL_Surface *loaded_surface;
-	SDL_Texture	*new_texture;
+	int i;
+	int	pixel_amount;
+	int color;
 
-	*texture = create_texture();
-	if (!(loaded_surface = IMG_Load(path)))
-		handle_error_sdl("Unable to load image!");
-	if (!(new_texture = SDL_CreateTextureFromSurface(sdl->renderer, loaded_surface)))
-		handle_error_sdl("Unable to create texture from surface!");
-	(*texture)->texture = new_texture;
-	(*texture)->width = SCREEN_WIDTH;
-	(*texture)->height = SCREEN_HEIGHT;
-	SDL_FreeSurface(loaded_surface);
-}
-
-void	render_texture(t_sdl *sdl, t_texture *texture, int x, int y)
-{
-	SDL_Rect render_quad;
-
-	render_quad = (SDL_Rect){x, y, texture->width, texture->height};
-	SDL_RenderCopy(sdl->renderer, texture->texture, NULL, &render_quad);
+	i = 0;
+	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
+	color = 0xDDDDDD;
+	while (i < pixel_amount / 2)
+	{
+		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH,
+		(i / 100 - 25) % 9 ? color : color / 2);
+		i++;
+	}
+	color = 0x333333;
+	while (i < pixel_amount)
+	{
+		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH, color);
+		i++;
+	}
 }
 
 int		main(int argc, char **argv)
@@ -273,7 +272,6 @@ int		main(int argc, char **argv)
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
-	texture_load_from_file(sdl, &sdl->textures, "alex.jpeg");
 	while (1)
 	{
 		if (SDL_PollEvent(&sdl->e))
@@ -337,13 +335,10 @@ int		main(int argc, char **argv)
 			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
 				sdl->player->posY -= sdl->player->dirY * moveSpeed;
 		}
+		draw_background(sdl);
 		draw_map(sdl);
-		SDL_SetRenderDrawColor(sdl->renderer, 0x77, 0x77, 0x77, 0xFF);
-		SDL_RenderClear(sdl->renderer);
-		render_texture(sdl, sdl->textures, 0, 0);
-		render_texture(sdl, sdl->textures, 0, SCREEN_HEIGHT / 2);
-		draw_map(sdl);
-		SDL_RenderPresent(sdl->renderer);
+		SDL_UpdateWindowSurface(sdl->window);
+		clear_surface(sdl->screen);
 	}
 	close_sdl(sdl);
 }

@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 13:49:35 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 15:21:32 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ typedef struct		s_sdl
 {
 	SDL_Window		*window;
 	SDL_Surface		*screen;
-	SDL_Surface		*image;
 	SDL_Event		e;
 	int				img_flags;
 	SDL_Renderer	*renderer;
