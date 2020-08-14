@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 16:03:27 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 16:53:13 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ t_player	*init_player(t_map *map)
 	player->dirY = 0;
 	player->planeX = 0;
 	player->planeY = 0.66;
+	player->move_speed = 0.1;
+	player->rotation_speed = 0.05;
 	return (player);
 }
 
@@ -265,35 +267,38 @@ void	draw_background(t_sdl *sdl)
 void	draw_fps(t_sdl *sdl)
 {
 	static int		i;
-	static double	time_prev;
-	double			time_now;
 	static char		*text;
 
-	time_now = clock();
-	if (!time_prev)
-	{
-		time_prev = time_now;
-		return;
-	}
 	if (i++ % 50 == 0)
 	{
 		if (sdl->text_surface)
 			SDL_FreeSurface(sdl->text_surface);
 		if (text)
 			free(text);
-		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC / (time_now - time_prev));
+		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC / (sdl->time_now - sdl->time_prev));
 		sdl->text_surface = TTF_RenderText_Shaded(sdl->font, text,
 		(SDL_Color){255, 255, 255, 0}, (SDL_Color){0, 0, 0, 0});
 	}
 	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, NULL);
-	time_prev = time_now;
+	sdl->time_prev = sdl->time_now;
+}
+
+void	update_player_speed(t_sdl *sdl)
+{
+	sdl->time_prev = sdl->time_now;
+	sdl->time_now = clock();
+	if (!sdl->time_prev)
+	{
+		sdl->time_prev = sdl->time_now;
+		return;
+	}
+	sdl->player->move_speed = (sdl->time_now - sdl->time_prev) / 1000 / 150;
+	sdl->player->rotation_speed = (sdl->time_now - sdl->time_prev) / 1000 / 250;
 }
 
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
-	double moveSpeed = 0.1;
-	double rotSpeed = 0.05;
 	int up = 0;
 	int down = 0;
 	int right = 0;
@@ -305,6 +310,7 @@ int		main(int argc, char **argv)
 	print_map(sdl->map);
 	while (1)
 	{
+		update_player_speed(sdl);
 		draw_background(sdl);
 		draw_map(sdl);
 		draw_fps(sdl);
@@ -341,34 +347,34 @@ int		main(int argc, char **argv)
 		if (right)
 		{
 			double oldDirX = sdl->player->dirX;
-			sdl->player->dirX = sdl->player->dirX * cos(-rotSpeed) - sdl->player->dirY * sin(-rotSpeed);
-			sdl->player->dirY = oldDirX * sin(-rotSpeed) + sdl->player->dirY * cos(-rotSpeed);
+			sdl->player->dirX = sdl->player->dirX * cos(-sdl->player->rotation_speed) - sdl->player->dirY * sin(-sdl->player->rotation_speed);
+			sdl->player->dirY = oldDirX * sin(-sdl->player->rotation_speed) + sdl->player->dirY * cos(-sdl->player->rotation_speed);
 			double oldPlaneX = sdl->player->planeX;
-			sdl->player->planeX = sdl->player->planeX * cos(-rotSpeed) - sdl->player->planeY * sin(-rotSpeed);
-			sdl->player->planeY = oldPlaneX * sin(-rotSpeed) + sdl->player->planeY * cos(-rotSpeed);
+			sdl->player->planeX = sdl->player->planeX * cos(-sdl->player->rotation_speed) - sdl->player->planeY * sin(-sdl->player->rotation_speed);
+			sdl->player->planeY = oldPlaneX * sin(-sdl->player->rotation_speed) + sdl->player->planeY * cos(-sdl->player->rotation_speed);
 		}
 		if (left)
 		{
 			double oldDirX = sdl->player->dirX;
-			sdl->player->dirX = sdl->player->dirX * cos(rotSpeed) - sdl->player->dirY * sin(rotSpeed);
-			sdl->player->dirY = oldDirX * sin(rotSpeed) + sdl->player->dirY * cos(rotSpeed);
+			sdl->player->dirX = sdl->player->dirX * cos(sdl->player->rotation_speed) - sdl->player->dirY * sin(sdl->player->rotation_speed);
+			sdl->player->dirY = oldDirX * sin(sdl->player->rotation_speed) + sdl->player->dirY * cos(sdl->player->rotation_speed);
 			double oldPlaneX = sdl->player->planeX;
-			sdl->player->planeX = sdl->player->planeX * cos(rotSpeed) - sdl->player->planeY * sin(rotSpeed);
-			sdl->player->planeY = oldPlaneX * sin(rotSpeed) + sdl->player->planeY * cos(rotSpeed);
+			sdl->player->planeX = sdl->player->planeX * cos(sdl->player->rotation_speed) - sdl->player->planeY * sin(sdl->player->rotation_speed);
+			sdl->player->planeY = oldPlaneX * sin(sdl->player->rotation_speed) + sdl->player->planeY * cos(sdl->player->rotation_speed);
 		}
 		if (up)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
-				sdl->player->posX += sdl->player->dirX * moveSpeed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * moveSpeed)] == 0)
-				sdl->player->posY += sdl->player->dirY * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)] == 0)
+				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
 		}
 		if (down)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * moveSpeed)][(int)(sdl->player->posY)] == 0)
-				sdl->player->posX -= sdl->player->dirX * moveSpeed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * moveSpeed)] == 0)
-				sdl->player->posY -= sdl->player->dirY * moveSpeed;
+			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] == 0)
+				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
+			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)] == 0)
+				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
 		}
 		//clear_surface(sdl->screen);
 	}

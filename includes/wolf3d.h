@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 15:55:36 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/14 16:43:10 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ typedef struct		s_player
 	double			planeY;
 	double			spawn_x;
 	double			spawn_y;
+	double			move_speed;
+	double			rotation_speed;
 }					t_player;
 
 typedef struct		s_sdl
@@ -70,6 +72,8 @@ typedef struct		s_sdl
 	t_player		*player;
 	TTF_Font		*font;
 	SDL_Surface		*text_surface;
+	double			time_prev;
+	double			time_now;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);
