@@ -216,7 +216,7 @@ void	draw_map(t_sdl *sdl)
       }
 
       //give x and y sides different brightness
-	double wallX; //where exactly the wall was hit
+	double wallX = 0; //where exactly the wall was hit
 	if (side == 0)
 	{
 		if (mapX - sdl->player->posX > 0)
