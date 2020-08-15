@@ -118,6 +118,8 @@ void put_pixel(SDL_Surface *screen, int x, int y, int color)
 
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
+	y[0] += sdl->player->jump_height;
+	y[1] += sdl->player->jump_height;
 	while (y[0] < y[1])
 		put_pixel(sdl->screen, x, y[0]++, color);
 }
@@ -270,7 +272,7 @@ void	draw_background(t_sdl *sdl)
 	i = 0;
 	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
 	color = 0xDDDDDD;
-	while (i < pixel_amount / 2)
+	while (i < pixel_amount / 2 + sdl->player->jump_height * SCREEN_WIDTH)
 	{
 		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH,
 		(i / 100 - 25) % 9 ? color : color / 2);
@@ -413,6 +415,34 @@ void	create_textures(t_sdl *sdl)
 		tex[TEX_WIDTH * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
 	}
 	sdl->tex = tex;
+}
+
+void	handle_jump_height(t_sdl *sdl)
+{
+	static int going_down;
+
+	if (going_down)
+	{
+		if (sdl->player->jump_height < 50)
+			sdl->player->jump_height -= 3;
+		else
+			sdl->player->jump_height -= 2;
+	}
+	else
+	{
+		if (sdl->player->jump_height < 50)
+			sdl->player->jump_height += 3;
+		else
+			sdl->player->jump_height += 2;
+	}
+	if (sdl->player->jump_height > 100)
+		going_down = 1;
+	if (sdl->player->jump_height <= 0 && going_down)
+	{
+		sdl->player->jump_height = 0;
+		sdl->input.jump = 0;
+		going_down = 0;
+	}
 }
 
 int		main(int argc, char **argv)

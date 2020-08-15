@@ -59,6 +59,7 @@ typedef struct		s_player
 	double			spawn_y;
 	double			move_speed;
 	double			rotation_speed;
+	int				jump_height;
 }					t_player;
 
 typedef struct		s_input
