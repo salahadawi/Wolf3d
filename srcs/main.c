@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 19:22:45 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/15 15:13:04 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,12 @@ t_player	*init_player(t_map *map)
 	return (player);
 }
 
-void put_pixel(SDL_Surface *screen, int x, int y, int color) {
+void put_pixel(SDL_Surface *screen, int x, int y, int color)
+{
 	int *pixel;
 
+	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1)
+		return;
 	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
 	*pixel = color;
 }
