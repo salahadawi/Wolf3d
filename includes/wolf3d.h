@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 18:17:50 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/15 14:53:49 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,15 @@ typedef struct		s_player
 	double			rotation_speed;
 }					t_player;
 
+typedef struct		s_input
+{
+	int				up;
+	int				down;
+	int				right;
+	int				left;
+	int				jump;
+}					t_input;
+
 typedef struct		s_sdl
 {
 	SDL_Window		*window;
@@ -77,6 +86,7 @@ typedef struct		s_sdl
 	double			time_prev;
 	double			time_now;
 	unsigned int	*tex;
+	t_input			input;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);

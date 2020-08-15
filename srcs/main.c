@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/15 15:13:04 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/15 15:23:24 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,10 +418,6 @@ void	create_textures(t_sdl *sdl)
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
-	int up = 0;
-	int down = 0;
-	int right = 0;
-	int left = 0;
 	int	loading = 1;
 
 	sdl = init();
@@ -454,27 +450,29 @@ int		main(int argc, char **argv)
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					right = 1;
+					sdl->input.right = 1;
 				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
-					left = 1;
+					sdl->input.left = 1;
 				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
-					up = 1;
+					sdl->input.up = 1;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
-					down = 1;
+					sdl->input.down = 1;
+				if (sdl->e.key.keysym.sym == SDLK_SPACE)
+					sdl->input.jump = 1;
 			}
 			else if (sdl->e.type == SDL_KEYUP)
 			{
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					right = 0;
+					sdl->input.right = 0;
 				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
-					left = 0;
+					sdl->input.left = 0;
 				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
-					up = 0;
+					sdl->input.up = 0;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
-					down = 0;
+					sdl->input.down = 0;
 			}
 		}
-		if (right)
+		if (sdl->input.right)
 		{
 			double oldDirX = sdl->player->dirX;
 			sdl->player->dirX = sdl->player->dirX * cos(-sdl->player->rotation_speed) - sdl->player->dirY * sin(-sdl->player->rotation_speed);
@@ -483,7 +481,7 @@ int		main(int argc, char **argv)
 			sdl->player->planeX = sdl->player->planeX * cos(-sdl->player->rotation_speed) - sdl->player->planeY * sin(-sdl->player->rotation_speed);
 			sdl->player->planeY = oldPlaneX * sin(-sdl->player->rotation_speed) + sdl->player->planeY * cos(-sdl->player->rotation_speed);
 		}
-		if (left)
+		if (sdl->input.left)
 		{
 			double oldDirX = sdl->player->dirX;
 			sdl->player->dirX = sdl->player->dirX * cos(sdl->player->rotation_speed) - sdl->player->dirY * sin(sdl->player->rotation_speed);
@@ -492,20 +490,22 @@ int		main(int argc, char **argv)
 			sdl->player->planeX = sdl->player->planeX * cos(sdl->player->rotation_speed) - sdl->player->planeY * sin(sdl->player->rotation_speed);
 			sdl->player->planeY = oldPlaneX * sin(sdl->player->rotation_speed) + sdl->player->planeY * cos(sdl->player->rotation_speed);
 		}
-		if (up)
+		if (sdl->input.up)
 		{
 			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
 				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
 			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)] < 1)
 				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
 		}
-		if (down)
+		if (sdl->input.down)
 		{
 			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
 				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
 			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)] < 1)
 				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
 		}
+		if (sdl->input.jump)
+			handle_jump_height(sdl);
 		//clear_surface(sdl->screen);
 		//ft_printf("%f %f\n", sdl->player->posX, sdl->player->posY);
 	}
