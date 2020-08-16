@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/15 14:53:49 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/16 13:23:08 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ typedef struct		s_sdl
 	double			time_now;
 	unsigned int	*tex;
 	t_input			input;
+	int				pixelation;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);

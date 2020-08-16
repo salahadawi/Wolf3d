@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/15 15:23:24 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/16 13:25:29 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 
 void	draw_map(t_sdl *sdl)
 {
-	for(int x = 0; x < SCREEN_WIDTH; x++)
+	for(int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
     {
       //calculate ray position and direction
       double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
@@ -245,7 +245,8 @@ void	draw_map(t_sdl *sdl)
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
 	  color = sdl->tex[texX];
-	  draw_vertical_line(sdl, x, (int[2]){drawStart, drawEnd}, color);
+	  for (int i = 0; i <= sdl->pixelation; i++)
+	  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
     }
 }
 
@@ -489,6 +490,10 @@ int		main(int argc, char **argv)
 					sdl->input.down = 1;
 				if (sdl->e.key.keysym.sym == SDLK_SPACE)
 					sdl->input.jump = 1;
+				if (sdl->e.key.keysym.sym == SDLK_e)
+					sdl->pixelation++;
+				if (sdl->e.key.keysym.sym == SDLK_q)
+					sdl->pixelation ? sdl->pixelation-- : (void)sdl->pixelation;
 			}
 			else if (sdl->e.type == SDL_KEYUP)
 			{
