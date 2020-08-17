@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/17 17:01:27 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 17:12:59 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ t_player	*init_player(t_map *map)
 	player->posX = player->spawn_x;
 	player->posY = player->spawn_y;
 	ft_printf("%f %f\n", player->spawn_x, player->spawn_y);
-	player->dirX = -1;
+	player->dirX = 1;//-0.5;
 	player->dirY = 0;
 	player->planeX = 0;
 	player->planeY = 0.66;
@@ -504,9 +504,9 @@ int		main(int argc, char **argv)
 				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
 					break ;
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					sdl->input.right = 1;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
 					sdl->input.left = 1;
+				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
+					sdl->input.right = 1;
 				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
 					sdl->input.up = 1;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
@@ -521,9 +521,9 @@ int		main(int argc, char **argv)
 			else if (sdl->e.type == SDL_KEYUP)
 			{
 				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					sdl->input.right = 0;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
 					sdl->input.left = 0;
+				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
+					sdl->input.right = 0;
 				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
 					sdl->input.up = 0;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
