@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/17 17:12:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 17:34:38 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -439,34 +439,6 @@ void	create_textures(t_sdl *sdl)
 		tex[TEX_WIDTH * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
 	}
 	sdl->tex = tex;
-}
-
-void	handle_jump_height(t_sdl *sdl)
-{
-	static int going_down;
-
-	if (going_down)
-	{
-		if (sdl->player->jump_height < 50)
-			sdl->player->jump_height -= 3;
-		else
-			sdl->player->jump_height -= 2;
-	}
-	else
-	{
-		if (sdl->player->jump_height < 50)
-			sdl->player->jump_height += 3;
-		else
-			sdl->player->jump_height += 2;
-	}
-	if (sdl->player->jump_height > 100)
-		going_down = 1;
-	if (sdl->player->jump_height <= 0 && going_down)
-	{
-		sdl->player->jump_height = 0;
-		sdl->input.jump = 0;
-		going_down = 0;
-	}
 }
 
 int		main(int argc, char **argv)

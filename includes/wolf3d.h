@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/16 13:23:08 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 17:35:20 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,7 @@ void	handle_arguments(t_sdl *sdl, int argc, char **argv);
 void	handle_error(char *message);
 
 void	print_map(t_map *map);
+
+void	handle_jump_height(t_sdl *sdl);
 
 #endif
