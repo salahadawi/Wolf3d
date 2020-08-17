@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/17 17:12:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 17:31:11 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,8 @@ void	draw_map(t_sdl *sdl)
           side = 1;
         }
         //Check if ray has hit a wall
+		if (mapY >= sdl->map->rows || mapX >= sdl->map->cols)
+			break;
         if(sdl->map->map[mapY][mapX] > 0) hit = 1;
       }
       //Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
@@ -216,7 +218,6 @@ void	draw_map(t_sdl *sdl)
         case 4:  color = 0xFFFFFF;  break; //white
         default: color = 0x00FFFF; break; //yellow
       }
-
       //give x and y sides different brightness
 	double wallX = 0; //where exactly the wall was hit
 	if (side == 0)
@@ -245,8 +246,10 @@ void	draw_map(t_sdl *sdl)
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
 	  color = sdl->tex[texX];
+		if (!hit)
+			color = 0xFF0000;
 	  for (int i = 0; i <= sdl->pixelation; i++)
-	  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+		  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
     }
 }
 
