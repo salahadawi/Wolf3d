@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/16 13:25:29 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 13:59:47 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,12 +367,35 @@ void	draw_box(SDL_Surface *screen, int xywh[4], int color, void (*f)(SDL_Surface
 	}
 }
 
+void	draw_minimap_map(t_sdl *sdl)
+{
+	int col;
+	int row;
+
+	row = 0;
+	while (row < sdl->map->rows)
+	{
+		col = 0;
+		while (col < sdl->map->cols)
+		{
+			if (sdl->map->map[row][col] == 1)
+				draw_box(sdl->screen, (int[4]){col * 200 / sdl->map->cols + 30, row * 200 / sdl->map->rows + 30, 200 / sdl->map->cols, 200 / sdl->map->rows}, 0xFFFFFF,  &put_pixel);
+			col++;
+		}
+		row++;
+	}
+}
+
 void	draw_minimap(t_sdl *sdl)
 {
 	draw_box(sdl->screen, (int[4]){30, 30, 200, 200}, 0x999999,  &modify_pixel_remove);
-	draw_box(sdl->screen, (int[4]){30 + 190 * ((sdl->player->posX -1) / sdl->map->cols),
-	30 + 190 * ((sdl->player->posY - 1) / sdl->map->rows),
+	draw_minimap_map(sdl);
+	draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1) / sdl->map->cols),
+	30 + 170 * ((sdl->player->posY - 1) / sdl->map->rows),
 	5, 5}, 0xFF0000,  &put_pixel);
+	draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1 + sdl->player->dirX) / sdl->map->cols),
+	30 + 170 * ((sdl->player->posY - 1 + sdl->player->dirY) / sdl->map->rows),
+	5, 5}, 0x00FF00,  &put_pixel);
 }
 
 void	update_player_speed(t_sdl *sdl)
