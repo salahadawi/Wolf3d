@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/17 13:59:47 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/17 17:01:27 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ void	draw_map(t_sdl *sdl)
           side = 1;
         }
         //Check if ray has hit a wall
-        if(sdl->map->map[mapX][mapY] > 0) hit = 1;
+        if(sdl->map->map[mapY][mapX] > 0) hit = 1;
       }
       //Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
       if(side == 0) perpWallDist = (mapX - sdl->player->posX + (1 - stepX) / 2) / rayDirX;
@@ -208,7 +208,7 @@ void	draw_map(t_sdl *sdl)
     int color;
 
 	color = 0xFFFF;
-      switch(sdl->map->map[mapX][mapY])
+      switch(sdl->map->map[mapY][mapX])
       {
         case 1:  color = 0xFF0000;    break; //red
         case 2:  color = 0x00FF00;  break; //green
@@ -550,22 +550,22 @@ int		main(int argc, char **argv)
 		}
 		if (sdl->input.up)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
-				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)] < 1)
+			if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)][(int)(sdl->player->posX)] < 1)
 				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)] < 1)
+				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.down)
 		{
-			if (sdl->map->map[(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)][(int)(sdl->player->posY)] < 1)
-				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
-			if (sdl->map->map[(int)(sdl->player->posX)][(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)] < 1)
+			if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)][(int)(sdl->player->posX)] < 1)
 				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)] < 1)
+				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.jump)
 			handle_jump_height(sdl);
 		//clear_surface(sdl->screen);
-		//ft_printf("%f %f\n", sdl->player->posX, sdl->player->posY);
+		//ft_printf("X: %f Y: %f\n", sdl->player->posX, sdl->player->posY);
 	}
 	close_sdl(sdl);
 }
