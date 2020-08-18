@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/17 21:25:35 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/18 18:46:14 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ t_player	*init_player(t_map *map)
 	player->posY = player->spawn_y;
 	ft_printf("%f %f\n", player->spawn_x, player->spawn_y);
 	player->dirX = 1;//-0.5;
-	player->dirY = 0;
+	player->dirY = 0.000001;
 	player->planeX = 0;
 	player->planeY = 0.66;
 	player->move_speed = 0.1;
