@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 18:47:30 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/18 19:32:53 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,21 @@ int		get_pixel(SDL_Surface *screen, int x, int y)
 	Uint8	red;
 	Uint8 green;
 	Uint8 blue;
+	Uint8 bpp;
 
 	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1)
+	{
+		//ft_printf("x: %d, y: %d\n", x, y);
 		return 0;
-	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
-	//return (*pixel);
-	SDL_GetRGB(*pixel, screen->format, &red, &green, &blue);
+	}
+	bpp = screen->format->BytesPerPixel;
+	pixel = screen->pixels + y * screen->pitch + x * bpp;
+	if (bpp == 1)
+		SDL_GetRGB((Uint8)*pixel, screen->format, &red, &green, &blue);
+	else if (bpp == 2)
+		SDL_GetRGB((Uint16)*pixel, screen->format, &red, &green, &blue);
+	else
+		SDL_GetRGB(*pixel, screen->format, &red, &green, &blue);
 	return (red * 256 * 256 + green * 256 + blue);
 }
 
