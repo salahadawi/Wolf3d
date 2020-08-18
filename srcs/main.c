@@ -188,9 +188,11 @@ void	draw_map(t_sdl *sdl)
           mapY += stepY;
           side = 1;
         }
-        //Check if ray has hit a wall
-		if (mapY >= sdl->map->rows || mapX >= sdl->map->cols)
+		//Check if ray is out of bounds, if yes then exit loop
+		if (mapY >= sdl->map->rows || mapX >= sdl->map->cols ||
+			mapY < 0 || mapX < 0)
 			break;
+        //Check if ray has hit a wall
         if(sdl->map->map[mapY][mapX] > 0) hit = 1;
       }
       //Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
