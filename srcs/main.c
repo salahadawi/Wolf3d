@@ -155,7 +155,8 @@ int x[2], int y[2])
 		int texY = (int)texPos & (TEX_HEIGHT - 1);
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
-		put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], texY));
+		if (i > 0)
+			put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], texY));
 		texPos += step;
 		i++;
 	}
@@ -249,7 +250,7 @@ void	draw_map(t_sdl *sdl)
 
       //calculate lowest and highest pixel to fill in current stripe
       int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-      if(drawStart < 0)drawStart = 0;
+      //if(drawStart < 0)drawStart = 0;
       int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
       if(drawEnd >= SCREEN_HEIGHT)drawEnd = SCREEN_HEIGHT - 1;
 
