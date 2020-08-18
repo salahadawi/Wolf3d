@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 18:35:28 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/18 19:45:14 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 #define PLAYER_SPAWN_POINT -1
-#define TEX_WIDTH 512
-#define TEX_HEIGHT 512
 
 typedef	struct			s_texture
 {
