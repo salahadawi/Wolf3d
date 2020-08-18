@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 23:33:56 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/18 23:50:59 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,16 +254,6 @@ void	draw_map(t_sdl *sdl)
 
       //choose wall color
     int color;
-
-	color = 0xFFFF;
-      switch(sdl->map->map[mapY][mapX])
-      {
-        case 1:  color = 0xFF0000;    break; //red
-        case 2:  color = 0x00FF00;  break; //green
-        case 3:  color = 0x0000FF;   break; //blue
-        case 4:  color = 0xFFFFFF;  break; //white
-        default: color = 0x00FFFF; break; //yellow
-      }
       //give x and y sides different brightness
 	double wallX; //where exactly the wall was hit
 	if (side == 0)
