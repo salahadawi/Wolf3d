@@ -470,24 +470,11 @@ void	draw_loading_screen(t_sdl *sdl)
 	sdl->time_prev = sdl->time_now;
 }
 
-void	create_textures(t_sdl *sdl)
-{
-	unsigned int	*tex;
-
-	tex = (unsigned int *)malloc(sizeof(unsigned int) * TEX_HEIGHT * TEX_WIDTH);
-	for(int x = 0; x < TEX_WIDTH; x++)
-	for(int y = 0; y < TEX_HEIGHT; y++)
-	{
-		int xorcolor = (x * 256 / TEX_WIDTH) ^ (y * 256 / TEX_HEIGHT);
-		tex[TEX_WIDTH * y + x] = xorcolor + 256 * xorcolor + 65536 * xorcolor;
-	}
-	sdl->tex = tex;
-}
-
 void	open_textures(t_sdl *sdl)
 {
 	if (!(sdl->texture = IMG_Load("alex.png")))
 		handle_error("Texture not found");
+	ft_printf("w: %d, h: %d\n", sdl->texture->w, sdl->texture->h);
 }
 
 int		main(int argc, char **argv)
@@ -499,7 +486,6 @@ int		main(int argc, char **argv)
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
-	create_textures(sdl);
 	open_textures(sdl);
 	while (1)
 	{
