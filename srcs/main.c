@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 19:42:00 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/18 23:33:56 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ t_player	*init_player(t_map *map)
 	if (!(player = (t_player*)ft_memalloc(sizeof(*player))))
 		handle_error("Malloc failed");
 	set_spawn_point(player, map);
-	player->posX = player->spawn_x;
-	player->posY = player->spawn_y;
-	ft_printf("%f %f\n", player->spawn_x, player->spawn_y);
+	player->posX = player->spawn_x + 0.5;
+	player->posY = player->spawn_y + 0.5;
+	ft_printf("Player spawned at %f %f\n", player->posX, player->posY);
 	player->dirX = 1;//-0.5;
 	player->dirY = 0.000001;
 	player->planeX = 0;
@@ -483,7 +483,6 @@ void	open_textures(t_sdl *sdl)
 {
 	if (!(sdl->texture = IMG_Load("alex.png")))
 		handle_error("Texture not found");
-	ft_printf("w: %d, h: %d\n", sdl->texture->w, sdl->texture->h);
 }
 
 int		main(int argc, char **argv)
