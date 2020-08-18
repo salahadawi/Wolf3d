@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 19:32:53 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/18 19:42:00 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,6 @@ int x[2], int y[2])
 {
 	int i;
 
-	y[0] += sdl->player->jump_height;
-	y[1] += sdl->player->jump_height;
 	i = y[0];
 		double step = 1.0 * sdl->texture->h / (y[1] - y[0]);
 		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
@@ -156,7 +154,7 @@ int x[2], int y[2])
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
 		if (i > 0)
-			put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], texY));
+			put_pixel(sdl->screen, x[0], i + sdl->player->jump_height, get_pixel(texture, x[1], texY));
 		texPos += step;
 		i++;
 	}
