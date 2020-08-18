@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 18:46:14 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/18 18:47:30 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,42 @@ void put_pixel(SDL_Surface *screen, int x, int y, int color)
 		return;
 	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
 	*pixel = color;
+}
+
+int		get_pixel(SDL_Surface *screen, int x, int y)
+{
+	int *pixel;
+	Uint8	red;
+	Uint8 green;
+	Uint8 blue;
+
+	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1)
+		return 0;
+	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
+	//return (*pixel);
+	SDL_GetRGB(*pixel, screen->format, &red, &green, &blue);
+	return (red * 256 * 256 + green * 256 + blue);
+}
+
+void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
+int x[2], int y[2])
+{
+	int i;
+
+	y[0] += sdl->player->jump_height;
+	y[1] += sdl->player->jump_height;
+	i = y[0];
+		double step = 1.0 * TEX_HEIGHT / (y[1] - y[0]);
+		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
+	while (i < y[1])
+	{
+		int texY = (int)texPos & (TEX_HEIGHT - 1);
+		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
+		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
+		put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], texY));
+		texPos += step;
+		i++;
+	}
 }
 
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
@@ -224,35 +260,37 @@ void	draw_map(t_sdl *sdl)
 	double wallX = 0; //where exactly the wall was hit
 	if (side == 0)
 	{
-		if (mapX - sdl->player->posX > 0)
-		{
-			color = sdl->tex[(int)(sdl->player->posX) % (TEX_WIDTH / 4)];
-		} else {
+		// if (mapX - sdl->player->posX > 0)
+		// {
+		// 	color = sdl->tex[(int)(sdl->player->posX) % (TEX_WIDTH / 4)];
 			wallX = sdl->player->posY + perpWallDist * rayDirY;
-		}
 	}
 	if (side == 1)
 	{
-		if (mapY - sdl->player->posY > 0)
-			color = color / 5;
-		color = color / 2;
+		// if (mapY - sdl->player->posY > 0)
+		// 	color = color / 5;
+		// color = color / 2;
 		wallX = sdl->player->posX + perpWallDist * rayDirX;
 	}
 
 	//x coordinate on the texture
 	int texX = (int)(wallX * (double)TEX_WIDTH);
 
-	if(side == 0 && rayDirX > 0) texX = TEX_WIDTH - texX - 1;
-	if(side == 1 && rayDirY < 0) texX = TEX_WIDTH - texX - 1;
+	texX = TEX_WIDTH - texX - 1;
 
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
-	  color = sdl->tex[texX];
+	  color = get_pixel(sdl->texture, texX, 50);//sdl->tex[texX];
+		//   for (int i = 0; i < TEX_HEIGHT * TEX_WIDTH; i++)
+		//   {
+		// 	  put_pixel(sdl->screen, i % TEX_WIDTH, i / TEX_HEIGHT, get_pixel(sdl->texture, i % TEX_WIDTH, i / TEX_HEIGHT));
+		//   }
 		if (!hit)
 			color = 0xFF0000;
 	  for (int i = 0; i <= sdl->pixelation; i++)
-		  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
-    }
+		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+		  draw_vertical_line_from_image(sdl, sdl->texture, (int[2]){x, texX}, (int[2]){drawStart, drawEnd});
+	}
 }
 
 void	clear_surface(SDL_Surface *surface)
@@ -446,6 +484,12 @@ void	create_textures(t_sdl *sdl)
 	sdl->tex = tex;
 }
 
+void	open_textures(t_sdl *sdl)
+{
+	if (!(sdl->texture = IMG_Load("alex.png")))
+		handle_error("Texture not found");
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
@@ -456,6 +500,7 @@ int		main(int argc, char **argv)
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
 	create_textures(sdl);
+	open_textures(sdl);
 	while (1)
 	{
 		if (loading)
