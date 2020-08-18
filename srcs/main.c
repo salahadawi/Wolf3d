@@ -267,7 +267,7 @@ void	draw_map(t_sdl *sdl)
         default: color = 0x00FFFF; break; //yellow
       }
       //give x and y sides different brightness
-	double wallX = 0; //where exactly the wall was hit
+	double wallX; //where exactly the wall was hit
 	if (side == 0)
 	{
 		// if (mapX - sdl->player->posX > 0)
@@ -282,6 +282,7 @@ void	draw_map(t_sdl *sdl)
 		// color = color / 2;
 		wallX = sdl->player->posX + perpWallDist * rayDirX;
 	}
+	wallX -= floor((wallX));
 
 	//x coordinate on the texture
 	int texX = (int)(wallX * (double)TEX_WIDTH);
