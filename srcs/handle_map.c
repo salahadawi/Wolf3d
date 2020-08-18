@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_map.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/14 13:47:23 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/14 13:48:06 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 00:00:48 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,8 @@ t_map	*store_map(char *filename)
 		store_map_line(line, map);
 		free(line);
 	}
-	if (map->rows == 0)
-		handle_error("Map is empty");
+	if (map->rows <= 1)
+		handle_error("Map is empty or too small");
 	close(fd);
 	return (map);
 }
