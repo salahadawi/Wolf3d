@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 20:27:25 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 22:15:30 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,7 +510,8 @@ int		main(int argc, char **argv)
 					sdl->input.up = 1;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
 					sdl->input.down = 1;
-				sdl->input.jump = sdl->e.key.keysym.sym == SDLK_SPACE;
+				if (sdl->e.key.keysym.sym == SDLK_SPACE)
+					sdl->input.jump = 1;
 				if (sdl->e.key.keysym.sym == SDLK_e)
 					sdl->pixelation++;
 				if (sdl->e.key.keysym.sym == SDLK_q)
