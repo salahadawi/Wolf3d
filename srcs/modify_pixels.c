@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   modify_pixels.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/19 16:43:08 by alcohen           #+#    #+#             */
-/*   Updated: 2020/08/19 19:52:30 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/19 19:57:42 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void modify_pixel_remove(SDL_Surface *screen, int x, int y, int color)
 void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist)
 {
 	double	intensity;
-	double r = ((double)rand() / (double)RAND_MAX);
+	//double r = ((double)rand() / (double)RAND_MAX);
 
 	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1 || x < 0 || y < 0)
 		return;
