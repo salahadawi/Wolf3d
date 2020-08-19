@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 23:50:59 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/19 15:27:39 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void put_pixel(SDL_Surface *screen, int x, int y, int color)
 {
 	int *pixel;
 
-	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1)
+	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1 || x < 0 || y < 0)
 		return;
 	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
 	*pixel = color;
@@ -153,8 +153,7 @@ int x[2], int y[2])
 		int texY = (int)texPos & (sdl->texture->h - 1);
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
-		if (i > 0)
-			put_pixel(sdl->screen, x[0], i + sdl->player->jump_height, get_pixel(texture, x[1], texY));
+		put_pixel(sdl->screen, x[0], i + sdl->player->jump_height, get_pixel(texture, x[1], texY));
 		texPos += step;
 		i++;
 	}
