@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 20:14:29 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 20:27:25 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,25 +153,25 @@ int		get_pixel(SDL_Surface *screen, int x, int y)
 void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
 int x[2], int y[2])
 {
-	int i;
 
-	i = y[0];
 		double step = 1.0 * sdl->texture->h / (y[1] - y[0]);
 		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
-	if (i < 0)
+	if (y[0] < 0 - sdl->player->jump_height)
 	{
-		texPos = texPos + step * abs(i);
-		i = 0;
+		texPos = texPos + step * abs(y[0] + sdl->player->jump_height);
+		y[0] = 0 - sdl->player->jump_height;
 	}
-	while (i < y[1])
+	if (y[1] > SCREEN_HEIGHT)
+		y[1] = SCREEN_HEIGHT;
+	while (y[0] < y[1])
 	{
 		int texY = (int)texPos & (sdl->texture->h - 1);
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
-		put_pixel(sdl->screen, x[0], i + sdl->player->jump_height, get_pixel(texture, x[1], texY));
-		add_fog_to_pixel(sdl->screen, x[0], i + sdl->player->jump_height, sdl->wall_dist);
+		put_pixel(sdl->screen, x[0], y[0] + sdl->player->jump_height, get_pixel(texture, x[1], texY));
+		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->jump_height, sdl->wall_dist);
 		texPos += step;
-		i++;
+		y[0]++;
 	}
 }
 
