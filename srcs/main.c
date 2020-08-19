@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 17:16:37 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/19 19:41:45 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,10 +162,12 @@ int x[2], int y[2])
 
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
+
+	(void)color;
 	y[0] += sdl->player->jump_height;
 	y[1] += sdl->player->jump_height;
 	while (y[0] < y[1])
-		put_pixel(sdl->screen, x, y[0]++, color);
+		modify_pixel_add(sdl->screen, x, y[0]++, OUT_OF_BOUNDS_COLOR);
 }
 
 void	draw_map(t_sdl *sdl)
@@ -217,7 +219,8 @@ void	draw_map(t_sdl *sdl)
         sideDistY = (mapY + 1.0 - sdl->player->posY) * deltaDistY;
       }
       //perform DDA
-      while (hit == 0)
+
+	  while (hit == 0)
       {
         //jump to next map square, OR in x-direction, OR in y-direction
         if(sideDistX < sideDistY)
@@ -288,8 +291,8 @@ void	draw_map(t_sdl *sdl)
 	if (!hit)
 	{
 		color = 0xFF0000;
-		 for (int i = 0; i <= sdl->pixelation; i++)
-		  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+		for (int i = 0; i <= sdl->pixelation; i++)
+			draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
 	}
 	else
 	  for (int i = 0; i <= sdl->pixelation; i++)
@@ -437,7 +440,7 @@ void	draw_loading_screen(t_sdl *sdl)
 
 void	open_textures(t_sdl *sdl)
 {
-	if (!(sdl->texture = IMG_Load("alex.png")))
+	if (!(sdl->texture = IMG_Load("wall.png")))
 		handle_error("Texture not found");
 }
 

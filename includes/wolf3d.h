@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 17:17:22 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/19 19:34:41 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,13 @@
 # include "SDL_ttf.h"
 # include <time.h>
 
+#include <stdio.h> //
+
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 #define PLAYER_SPAWN_POINT -1
-#define LIGHTING_INTENSITY 0.8
+#define LIGHTING_INTENSITY 1
+#define OUT_OF_BOUNDS_COLOR 0x550000
 
 typedef	struct			s_texture
 {
