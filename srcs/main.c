@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 19:41:45 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/19 20:14:29 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,11 @@ int x[2], int y[2])
 	i = y[0];
 		double step = 1.0 * sdl->texture->h / (y[1] - y[0]);
 		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
+	if (i < 0)
+	{
+		texPos = texPos + step * abs(i);
+		i = 0;
+	}
 	while (i < y[1])
 	{
 		int texY = (int)texPos & (sdl->texture->h - 1);
