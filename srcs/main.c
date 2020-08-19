@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 15:27:39 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 15:33:23 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,11 +283,15 @@ void	draw_map(t_sdl *sdl)
 		//   {
 		// 	  put_pixel(sdl->screen, i % TEX_WIDTH, i / TEX_HEIGHT, get_pixel(sdl->texture, i % TEX_WIDTH, i / TEX_HEIGHT));
 		//   }
-		if (!hit)
-			color = 0xFF0000;
+	if (!hit)
+	{
+		color = 0xFF0000;
+		 for (int i = 0; i <= sdl->pixelation; i++)
+		  draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+	}
+	else
 	  for (int i = 0; i <= sdl->pixelation; i++)
-		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
-		  draw_vertical_line_from_image(sdl, sdl->texture, (int[2]){x, texX}, (int[2]){drawStart, drawEnd});
+		  draw_vertical_line_from_image(sdl, sdl->texture, (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 	}
 }
 
