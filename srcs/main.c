@@ -116,6 +116,16 @@ void	put_pixel(SDL_Surface *screen, int x, int y, int color)
 	*pixel = color;
 }
 
+void	put_minimap_pixel(SDL_Surface *screen, int x, int y, int color)
+{
+	int *pixel;
+
+	if (x > 240 || y > 240 || x < 30 || y < 30)
+		return;
+	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
+	*pixel = color;
+}
+
 int		get_pixel(SDL_Surface *screen, int x, int y)
 {
 	int *pixel;
@@ -387,7 +397,9 @@ void	draw_minimap_map(t_sdl *sdl)
 {
 	int col;
 	int row;
+	int	blocks_visible;
 
+	blocks_visible = 15;
 	row = 0;
 	while (row < sdl->map->rows)
 	{
@@ -395,23 +407,30 @@ void	draw_minimap_map(t_sdl *sdl)
 		while (col < sdl->map->cols)
 		{
 			if (sdl->map->map[row][col] == 1)
-				draw_box(sdl->screen, (int[4]){col * 200 / sdl->map->cols + 30, row * 200 / sdl->map->rows + 30, 200 / sdl->map->cols, 200 / sdl->map->rows}, 0xFFFFFF,  &put_pixel);
+				draw_box(sdl->screen, (int[4]){(col - sdl->player->posX) * 210 / blocks_visible + 120,
+				(row - sdl->player->posY) * 210 / blocks_visible + 120,
+				210 / blocks_visible,
+				210 / blocks_visible},
+				0x888888,  &put_minimap_pixel);
 			col++;
 		}
 		row++;
 	}
 }
 
+
 void	draw_minimap(t_sdl *sdl)
 {
-	draw_box(sdl->screen, (int[4]){30, 30, 200, 200}, 0x999999,  &modify_pixel_remove);
+	draw_box(sdl->screen, (int[4]){25, 25, 220, 220}, 0x333333,  &put_pixel);
+	draw_box(sdl->screen, (int[4]){30, 30, 210, 210}, 0x999999,  &modify_pixel_remove);
 	draw_minimap_map(sdl);
-	draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1) / sdl->map->cols),
-	30 + 170 * ((sdl->player->posY - 1) / sdl->map->rows),
-	5, 5}, 0xFF0000,  &put_pixel);
-	draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1 + sdl->player->dirX) / sdl->map->cols),
-	30 + 170 * ((sdl->player->posY - 1 + sdl->player->dirY) / sdl->map->rows),
-	5, 5}, 0x00FF00,  &put_pixel);
+	draw_box(sdl->screen, (int[4]){115, 115, 10, 10}, 0xFF0000, &put_pixel);
+	// draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1) / sdl->map->cols),
+	// 30 + 170 * ((sdl->player->posY - 1) / sdl->map->rows),
+	// 5, 5}, 0xFF0000,  &put_pixel);
+	// draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1 + sdl->player->dirX) / sdl->map->cols),
+	// 30 + 170 * ((sdl->player->posY - 1 + sdl->player->dirY) / sdl->map->rows),
+	// 5, 5}, 0x00FF00,  &put_pixel);
 }
 
 void	update_player_speed(t_sdl *sdl)
