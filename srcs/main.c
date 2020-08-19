@@ -510,12 +510,13 @@ int		main(int argc, char **argv)
 					sdl->input.up = 1;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
 					sdl->input.down = 1;
-				if (sdl->e.key.keysym.sym == SDLK_SPACE)
-					sdl->input.jump = 1;
+				sdl->input.jump = sdl->e.key.keysym.sym == SDLK_SPACE;
 				if (sdl->e.key.keysym.sym == SDLK_e)
 					sdl->pixelation++;
 				if (sdl->e.key.keysym.sym == SDLK_q)
 					sdl->pixelation ? sdl->pixelation-- : (void)sdl->pixelation;
+				if (sdl->e.key.keysym.sym == SDLK_LCTRL)
+					sdl->input.crouch = 1;
 			}
 			else if (sdl->e.type == SDL_KEYUP)
 			{
@@ -527,6 +528,8 @@ int		main(int argc, char **argv)
 					sdl->input.up = 0;
 				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
 					sdl->input.down = 0;
+				if (sdl->e.key.keysym.sym == SDLK_LCTRL)
+					sdl->input.crouch = 0;
 			}
 		}
 		if (sdl->input.right)
@@ -567,6 +570,8 @@ int		main(int argc, char **argv)
 		}
 		if (sdl->input.jump)
 			handle_jump_height(sdl);
+		if (sdl->input.crouch)
+			sdl->player->jump_height = -100;
 		//clear_surface(sdl->screen);
 		//ft_printf("X: %f Y: %f\n", sdl->player->posX, sdl->player->posY);
 	}
