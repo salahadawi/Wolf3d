@@ -559,20 +559,20 @@ int		main(int argc, char **argv)
 		}
 		if (sdl->input.up)
 		{
-			if (sdl->player->posY + sdl->player->dirY * sdl->player->move_speed < sdl->map->rows && sdl->player->posY + sdl->player->dirY * sdl->player->move_speed > 0)
-				if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed)][(int)(sdl->player->posX)] < 1)
+			if (sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3)< sdl->map->rows && sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+				if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
 					sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
-			if (sdl->player->posX + sdl->player->dirX * sdl->player->move_speed < sdl->map->cols && sdl->player->posX + sdl->player->dirX * sdl->player->move_speed > 0)
-				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed)] < 1)
+			if (sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
 					sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.down)
 		{
-			if (sdl->player->posY - sdl->player->dirY * sdl->player->move_speed < sdl->map->rows && sdl->player->posY - sdl->player->dirY * sdl->player->move_speed > 0)
-				if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed)][(int)(sdl->player->posX)] < 1)
+			if (sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+				if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
 					sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
-			if (sdl->player->posX - sdl->player->dirX * sdl->player->move_speed < sdl->map->cols && sdl->player->posX - sdl->player->dirX * sdl->player->move_speed > 0)
-				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed)] < 1)
+			if (sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
 				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.jump)
