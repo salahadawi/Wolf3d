@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/18 19:45:14 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 17:17:22 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 #define PLAYER_SPAWN_POINT -1
+#define LIGHTING_INTENSITY 0.8
 
 typedef	struct			s_texture
 {
@@ -87,6 +88,7 @@ typedef struct		s_sdl
 	t_input			input;
 	int				pixelation;
 	SDL_Surface		*texture;
+	double			wall_dist;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);
@@ -96,5 +98,13 @@ void	handle_error(char *message);
 void	print_map(t_map *map);
 
 void	handle_jump_height(t_sdl *sdl);
+
+void	modify_pixel_multiply(SDL_Surface *screen, int x, int y, double amount);
+
+void	modify_pixel_remove(SDL_Surface *screen, int x, int y, int color);
+
+void	modify_pixel_add(SDL_Surface *screen, int x, int y, int color);
+
+void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist);
 
 #endif

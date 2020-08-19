@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 15:33:23 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/19 17:16:37 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ t_player	*init_player(t_map *map)
 	return (player);
 }
 
-void put_pixel(SDL_Surface *screen, int x, int y, int color)
+void	put_pixel(SDL_Surface *screen, int x, int y, int color)
 {
 	int *pixel;
 
@@ -154,6 +154,7 @@ int x[2], int y[2])
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
 		put_pixel(sdl->screen, x[0], i + sdl->player->jump_height, get_pixel(texture, x[1], texY));
+		add_fog_to_pixel(sdl->screen, x[0], i + sdl->player->jump_height, sdl->wall_dist);
 		texPos += step;
 		i++;
 	}
@@ -283,6 +284,7 @@ void	draw_map(t_sdl *sdl)
 		//   {
 		// 	  put_pixel(sdl->screen, i % TEX_WIDTH, i / TEX_HEIGHT, get_pixel(sdl->texture, i % TEX_WIDTH, i / TEX_HEIGHT));
 		//   }
+	sdl->wall_dist = perpWallDist;
 	if (!hit)
 	{
 		color = 0xFF0000;
@@ -291,6 +293,7 @@ void	draw_map(t_sdl *sdl)
 	}
 	else
 	  for (int i = 0; i <= sdl->pixelation; i++)
+		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, 0xFF0000 - (int)(0xFF0000 / perpWallDist));
 		  draw_vertical_line_from_image(sdl, sdl->texture, (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 	}
 }
@@ -317,11 +320,11 @@ void	draw_background(t_sdl *sdl)
 
 	i = 0;
 	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
-	color = 0xDDDDDD;
+	color = 0x090909;
 	while (i < pixel_amount / 2 + sdl->player->jump_height * SCREEN_WIDTH)
 	{
 		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH,
-		(i / 100 - 25) % 9 ? color : color / 2);
+		(i / 100) ? color : color / 2);
 		i++;
 	}
 	color = 0x333333;
@@ -349,46 +352,6 @@ void	draw_fps(t_sdl *sdl)
 	}
 	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, NULL);
 	sdl->time_prev = sdl->time_now;
-}
-
-//Add the specified color to whatever color is already in the pixel
-
-void modify_pixel_add(SDL_Surface *screen, int x, int y, int color)
-{
-	int *pixel;
-	int	red;
-	int	green;
-	int	blue;
-
-	(void)color;
-	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
-	red = (*pixel / 256 / 256 % 256) + (color / 256 / 256 % 256);
-	green = (*pixel / 256 % 256) + (color / 256 % 256);
-	blue = (*pixel % 256) + (color % 256);
-	red = red > 255 ? 255 : red;
-	green = green > 255 ? 255 : green;
-	blue = blue > 255 ? 255 : blue;
-	*pixel = blue + green * 256 + red * 256 * 256;
-}
-
-//Remove the specified color from whatever color is already in the pixel
-
-void modify_pixel_remove(SDL_Surface *screen, int x, int y, int color)
-{
-	int *pixel;
-	int	red;
-	int	green;
-	int	blue;
-
-	(void)color;
-	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
-	red = (*pixel / 256 / 256 % 256) - (color / 256 / 256 % 256);
-	green = (*pixel / 256 % 256) - (color / 256 % 256);
-	blue = (*pixel % 256) - (color % 256);
-	red = red < 0 ? 0 : red;
-	green = green < 0 ? 0 : green;
-	blue = blue < 0 ? 0 : blue;
-	*pixel = blue + green * 256 + red * 256 * 256;
 }
 
 //Takes as parameter the function to use, to either draw a certain color or modify an already

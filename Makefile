@@ -6,12 +6,12 @@
 #    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/17 17:35:51 by alcohen          ###   ########.fr        #
+#    Updated: 2020/08/19 16:43:30 by alcohen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
-CFILES = main.c handle_map.c player_movement.c
+CFILES = main.c handle_map.c player_movement.c modify_pixels.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
 INCLUDES = -I libft/includes -I includes \
