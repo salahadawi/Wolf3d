@@ -103,6 +103,7 @@ t_player	*init_player(t_map *map)
 	player->planeY = 0.66;
 	player->move_speed = MOVE_SPEED;
 	player->rotation_speed = ROTATION_SPEED;
+	player->busy = 0;
 	return (player);
 }
 
