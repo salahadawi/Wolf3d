@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 17:34:04 by alcohen           #+#    #+#             */
-/*   Updated: 2020/08/20 13:53:14 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/20 18:25:48 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,17 @@ void	player_crouch(t_player *player, int crouch)
 {
 	if (crouch)
 	{
-		player->cam_height = -CROUCH_AMT;
+		if (!player->busy)
+		{
+			player->busy = 1;
+			player->cam_height = -CROUCH_AMT;
+		}
 		player->crouching = 1;
+		
 	}
 	else
 	{
+		player->busy = 0;
 		player->cam_height = 0;
 		player->crouching = 0;
 	} 

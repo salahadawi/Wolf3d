@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/20 13:54:32 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/20 18:23:36 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -572,12 +572,11 @@ int		main(int argc, char **argv)
 				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.jump)
-			player_jump(sdl->player, &sdl->input.jump);
+			player_jump(sdl->player, &sdl->input.jump);		
 		if (sdl->input.crouch)
 			player_crouch(sdl->player, 1);
 		else if (sdl->player->crouching)
 			player_crouch(sdl->player, 0);
-						
 		//clear_surface(sdl->screen);
 	}
 	close_sdl(sdl);
