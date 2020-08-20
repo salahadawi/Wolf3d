@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 22:15:30 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/20 13:54:32 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void		set_spawn_point(t_player *player, t_map *map)
 		while (col < map->cols)
 		{
 
-			if (map->map[row][col] == PLAYER_SPAWN_POINT)
+			if (map->map[row][col] == SPAWN_POINT)
 			{
 				player->spawn_x = (double)col;
 				player->spawn_y = (double)row;
@@ -101,8 +101,8 @@ t_player	*init_player(t_map *map)
 	player->dirY = 0.000001;
 	player->planeX = 0;
 	player->planeY = 0.66;
-	player->move_speed = 0.1;
-	player->rotation_speed = 0.05;
+	player->move_speed = MOVE_SPEED;
+	player->rotation_speed = ROTATION_SPEED;
 	return (player);
 }
 
@@ -156,10 +156,10 @@ int x[2], int y[2])
 
 		double step = 1.0 * sdl->texture->h / (y[1] - y[0]);
 		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
-	if (y[0] < 0 - sdl->player->jump_height)
+	if (y[0] < 0 - sdl->player->cam_height)
 	{
-		texPos = texPos + step * abs(y[0] + sdl->player->jump_height);
-		y[0] = 0 - sdl->player->jump_height;
+		texPos = texPos + step * abs(y[0] + sdl->player->cam_height);
+		y[0] = 0 - sdl->player->cam_height;
 	}
 	if (y[1] > SCREEN_HEIGHT)
 		y[1] = SCREEN_HEIGHT;
@@ -168,8 +168,8 @@ int x[2], int y[2])
 		int texY = (int)texPos & (sdl->texture->h - 1);
 		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
 		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
-		put_pixel(sdl->screen, x[0], y[0] + sdl->player->jump_height, get_pixel(texture, x[1], texY));
-		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->jump_height, sdl->wall_dist);
+		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height, get_pixel(texture, x[1], texY));
+		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height, sdl->wall_dist);
 		texPos += step;
 		y[0]++;
 	}
@@ -179,8 +179,8 @@ void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
 
 	(void)color;
-	y[0] += sdl->player->jump_height;
-	y[1] += sdl->player->jump_height;
+	y[0] += sdl->player->cam_height;
+	y[1] += sdl->player->cam_height;
 	while (y[0] < y[1])
 		modify_pixel_add(sdl->screen, x, y[0]++, OUT_OF_BOUNDS_COLOR);
 }
@@ -339,7 +339,7 @@ void	draw_background(t_sdl *sdl)
 	i = 0;
 	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
 	color = 0x090909;
-	while (i < pixel_amount / 2 + sdl->player->jump_height * SCREEN_WIDTH)
+	while (i < pixel_amount / 2 + sdl->player->cam_height * SCREEN_WIDTH)
 	{
 		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH,
 		(i / 100) ? color : color / 2);
@@ -438,6 +438,8 @@ void	update_player_speed(t_sdl *sdl)
 	sdl->time_prev = sdl->time_now;
 	sdl->time_now = clock();
 	sdl->player->move_speed = (sdl->time_now - sdl->time_prev) / 1000 / 150;
+	if (sdl->player->crouching)
+		sdl->player->move_speed *= CROUCH_MOVE_SPEED_MULT;
 	sdl->player->rotation_speed = (sdl->time_now - sdl->time_prev) / 1000 / 250;
 }
 
@@ -464,7 +466,7 @@ void	draw_loading_screen(t_sdl *sdl)
 
 void	open_textures(t_sdl *sdl)
 {
-	if (!(sdl->texture = IMG_Load("wall.png")))
+	if (!(sdl->texture = IMG_Load("textures/wall.png")))
 		handle_error("Texture not found");
 }
 
@@ -570,11 +572,13 @@ int		main(int argc, char **argv)
 				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
 		}
 		if (sdl->input.jump)
-			handle_jump_height(sdl);
+			player_jump(sdl->player, &sdl->input.jump);
 		if (sdl->input.crouch)
-			sdl->player->jump_height = -100;
+			player_crouch(sdl->player, 1);
+		else if (sdl->player->crouching)
+			player_crouch(sdl->player, 0);
+						
 		//clear_surface(sdl->screen);
-		//ft_printf("X: %f Y: %f\n", sdl->player->posX, sdl->player->posY);
 	}
 	close_sdl(sdl);
 }

@@ -6,36 +6,50 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 17:34:04 by alcohen           #+#    #+#             */
-/*   Updated: 2020/08/17 21:23:36 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/20 13:53:14 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void	handle_jump_height(t_sdl *sdl)
+void	player_jump(t_player *player, int *input_jump)
 {
 	static int going_down;
 
 	if (going_down)
 	{
-		if (sdl->player->jump_height < 50)
-			sdl->player->jump_height -= 3;
+		if (player->cam_height < 50)
+			player->cam_height -= 3;
 		else
-			sdl->player->jump_height -= 2;
+			player->cam_height -= 2;
 	}
 	else
 	{
-		if (sdl->player->jump_height < 50)
-			sdl->player->jump_height += 3;
+		if (player->cam_height < 50)
+			player->cam_height += 3;
 		else
-			sdl->player->jump_height += 2;
+			player->cam_height += 2;
 	}
-	if (sdl->player->jump_height > 100)
+	if (player->cam_height > 100)
 		going_down = 1;
-	if (sdl->player->jump_height <= 0 && going_down)
+	if (player->cam_height <= 0 && going_down)
 	{
-		sdl->player->jump_height = 0;
-		sdl->input.jump = 0;
+		player->cam_height = 0;
+		*input_jump = 0;
 		going_down = 0;
 	}
+}
+
+void	player_crouch(t_player *player, int crouch)
+{
+	if (crouch)
+	{
+		player->cam_height = -CROUCH_AMT;
+		player->crouching = 1;
+	}
+	else
+	{
+		player->cam_height = 0;
+		player->crouching = 0;
+	} 
 }

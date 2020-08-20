@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 20:35:18 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/20 13:54:12 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,27 @@
 # include <fcntl.h>
 # include <math.h>
 # include "SDL.h"
-# include "SDL_image.h"
-# include "SDL_ttf.h"
+# include <SDL_image.h>
+# include <SDL_ttf.h>
 # include <time.h>
 
 #include <stdio.h> //
 
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
-#define PLAYER_SPAWN_POINT -1
 #define LIGHTING_INTENSITY 1
 #define OUT_OF_BOUNDS_COLOR 0x550000
+
+/*
+** Player
+*/
+
+#define CROUCH_AMT 100
+#define CROUCH_MOVE_SPEED_MULT 0.3
+#define MOVE_SPEED 0.1
+#define ROTATION_SPEED 0.05;
+#define SPAWN_POINT -1
+
 
 typedef	struct			s_texture
 {
@@ -61,7 +71,8 @@ typedef struct		s_player
 	double			spawn_y;
 	double			move_speed;
 	double			rotation_speed;
-	int				jump_height;
+	int				cam_height;
+	int				crouching;
 }					t_player;
 
 typedef struct		s_input
@@ -101,7 +112,9 @@ void	handle_error(char *message);
 
 void	print_map(t_map *map);
 
-void	handle_jump_height(t_sdl *sdl);
+void	player_jump(t_player *player, int *input_jump);
+
+void	player_crouch(t_player *player, int crouch);
 
 void	modify_pixel_multiply(SDL_Surface *screen, int x, int y, double amount);
 
