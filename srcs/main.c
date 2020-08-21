@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 13:49:54 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 14:06:07 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,9 +151,9 @@ int		get_pixel(SDL_Surface *screen, int x, int y)
 void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
 int x[2], int y[2])
 {
-	int		tex_y;
-	double	step;
-	double	tex_pos;
+	int tex_y;
+	double step;
+	double tex_pos;
 
 	step = 1.0 * texture->h / (y[1] - y[0]);
 	tex_pos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
@@ -168,15 +168,15 @@ int x[2], int y[2])
 	{
 		tex_y = (int)tex_pos & (texture->h - 1);
 		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
-			get_pixel(texture, x[1], tex_y));
+				  get_pixel(texture, x[1], tex_y));
 		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
-			sdl->wall_dist);
+						 sdl->wall_dist);
 		tex_pos += step;
 		y[0]++;
 	}
 }
 
-void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
+void draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
 	(void)color;
 	y[0] += sdl->player->cam_height;
@@ -189,136 +189,138 @@ void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 ** Fix norm in this function once we completely understand how it works
 */
 
-void	draw_map(t_sdl *sdl)
+void draw_map(t_sdl *sdl)
 {
-	int		wall_side;
-	for(int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
-    {
-      //calculate ray position and direction
-      double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
-      double rayDirX = sdl->player->dirX + sdl->player->planeX * cameraX;
-      double rayDirY = sdl->player->dirY + sdl->player->planeY * cameraX;
-      //which box of the map we're in
-      int mapX = (int)sdl->player->posX;
-      int mapY = (int)sdl->player->posY;
-
-      //length of ray from current position to next x or y-side
-      double sideDistX;
-      double sideDistY;
-
-       //length of ray from one x or y-side to next x or y-side
-      double deltaDistX = fabs(1 / rayDirX);
-      double deltaDistY = fabs(1 / rayDirY);
-      double perpWallDist;
-
-      //what direction to step in x or y-direction (either +1 or -1)
-      int stepX;
-      int stepY;
-
-      int hit = 0; //was there a wall hit?
-      int side; //was a NS or a EW wall hit?
-      //calculate step and initial sideDist
-      if(rayDirX < 0)
-      {
-        stepX = -STEP_DIST_X;
-        sideDistX = (sdl->player->posX - mapX) * deltaDistX;
-      }
-      else
-      {
-        stepX = STEP_DIST_X;
-        sideDistX = (mapX + 1.0 - sdl->player->posX) * deltaDistX;
-      }
-      if(rayDirY < 0)
-      {
-        stepY = -STEP_DIST_Y;
-        sideDistY = (sdl->player->posY - mapY) * deltaDistY;
-      }
-      else
-      {
-        stepY = STEP_DIST_Y;
-        sideDistY = (mapY + 1.0 - sdl->player->posY) * deltaDistY;
-      }
-      //perform DDA
-
-	  while (hit == 0)
-      {
-        //jump to next map square, OR in x-direction, OR in y-direction
-        if(sideDistX < sideDistY)
-        {
-          sideDistX += deltaDistX;
-          mapX += stepX;
-          side = 0;
-        }
-        else
-        {
-          sideDistY += deltaDistY;
-          mapY += stepY;
-          side = 1;
-        }
-		//Check if ray is out of bounds, if yes then exit loop
-		if (mapY >= sdl->map->rows || mapX >= sdl->map->cols ||
-			mapY < 0 || mapX < 0)
-			break;
-        //Check if ray has hit a wall
-        if(sdl->map->map[mapY][mapX] > 0) hit = 1;
-      }
-      //Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
-      if(side == 0) perpWallDist = (mapX - sdl->player->posX + (1 - stepX) / 2) / rayDirX;
-      else          perpWallDist = (mapY - sdl->player->posY + (1 - stepY) / 2) / rayDirY;
-
-      //Calculate height of line to draw on screen
-      int lineHeight = (int)(SCREEN_HEIGHT / perpWallDist);
-
-      //calculate lowest and highest pixel to fill in current stripe
-      int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-      //if(drawStart < 0)drawStart = 0;
-      int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-      if(drawEnd >= SCREEN_HEIGHT)drawEnd = SCREEN_HEIGHT - 1;
-
-      //choose wall color
-    int color;
-      //give x and y sides different brightness
-	double wallX; //where exactly the wall was hit
-	if (side == 0)
+	int wall_side;
+	for (int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
 	{
-		wall_side = 0;
-		if (mapX - sdl->player->posX > 0)
-			wall_side = 1;
+		//calculate ray position and direction
+		double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
+		double rayDirX = sdl->player->dirX + sdl->player->planeX * cameraX;
+		double rayDirY = sdl->player->dirY + sdl->player->planeY * cameraX;
+		//which box of the map we're in
+		int mapX = (int)sdl->player->posX;
+		int mapY = (int)sdl->player->posY;
+
+		//length of ray from current position to next x or y-side
+		double sideDistX;
+		double sideDistY;
+
+		//length of ray from one x or y-side to next x or y-side
+		double deltaDistX = fabs(1 / rayDirX);
+		double deltaDistY = fabs(1 / rayDirY);
+		double perpWallDist;
+
+		//what direction to step in x or y-direction (either +1 or -1)
+		int stepX;
+		int stepY;
+
+		int hit = 0; //was there a wall hit?
+		int side;	 //was a NS or a EW wall hit?
+		//calculate step and initial sideDist
+		if (rayDirX < 0)
+		{
+			stepX = -STEP_DIST_X;
+			sideDistX = (sdl->player->posX - mapX) * deltaDistX;
+		}
+		else
+		{
+			stepX = STEP_DIST_X;
+			sideDistX = (mapX + 1.0 - sdl->player->posX) * deltaDistX;
+		}
+		if (rayDirY < 0)
+		{
+			stepY = -STEP_DIST_Y;
+			sideDistY = (sdl->player->posY - mapY) * deltaDistY;
+		}
+		else
+		{
+			stepY = STEP_DIST_Y;
+			sideDistY = (mapY + 1.0 - sdl->player->posY) * deltaDistY;
+		}
+		//perform DDA
+
+		while (hit == 0)
+		{
+			//jump to next map square, OR in x-direction, OR in y-direction
+			if (sideDistX < sideDistY)
+			{
+				sideDistX += deltaDistX;
+				mapX += stepX;
+				side = 0;
+			}
+			else
+			{
+				sideDistY += deltaDistY;
+				mapY += stepY;
+				side = 1;
+			}
+			//Check if ray is out of bounds, if yes then exit loop
+			if (mapY >= sdl->map->rows || mapX >= sdl->map->cols ||
+				mapY < 0 || mapX < 0)
+				break;
+			//Check if ray has hit a wall
+			if (sdl->map->map[mapY][mapX] > 0)
+				hit = 1;
+		}
+		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
+		if (side == 0)
+			perpWallDist = (mapX - sdl->player->posX + (1 - stepX) / 2) / rayDirX;
+		else
+			perpWallDist = (mapY - sdl->player->posY + (1 - stepY) / 2) / rayDirY;
+
+		//Calculate height of line to draw on screen
+		int lineHeight = (int)(SCREEN_HEIGHT / perpWallDist);
+
+		//calculate lowest and highest pixel to fill in current stripe
+		int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+		//if(drawStart < 0)drawStart = 0;
+		int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+		if (drawEnd >= SCREEN_HEIGHT)
+			drawEnd = SCREEN_HEIGHT - 1;
+
+		//choose wall color
+		int color;
+		//give x and y sides different brightness
+		double wallX; //where exactly the wall was hit
+		if (side == 0)
+		{
+			wall_side = 0;
+			if (mapX - sdl->player->posX > 0)
+				wall_side = 1;
 			wallX = sdl->player->posY + perpWallDist * rayDirY;
+		}
+		if (side == 1)
+		{
+			wall_side = 2;
+			if (mapY - sdl->player->posY > 0)
+				wall_side = 3;
+			wallX = sdl->player->posX + perpWallDist * rayDirX;
+		}
+		wallX -= floor((wallX));
 
-	}
-	if (side == 1)
-	{
-		wall_side = 2;
-		if (mapY - sdl->player->posY > 0)
-			wall_side = 3;
-		wallX = sdl->player->posX + perpWallDist * rayDirX;
-	}
-	wallX -= floor((wallX));
+		if (wall_side >= sdl->textures_amount)
+			hit = 0;
+		if (!hit)
+		{
+			color = 0xFF0000;
+			for (int i = 0; i <= sdl->pixelation; i++)
+				draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+		}
+		else
+		{
+			ft_printf("%d\n", sdl->textures_amount);
+			//x coordinate on the texture
+			int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
 
-	//x coordinate on the texture
-	int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
-
-	texX = sdl->textures[wall_side]->w - texX - 1;
-
-      //draw the pixels of the stripe as a vertical line
-      //verLine(x, drawStart, drawEnd, color);
-	  color = get_pixel(sdl->textures[0], texX, 50);//sdl->tex[texX];
-		//   for (int i = 0; i < TEX_HEIGHT * TEX_WIDTH; i++)
-		//   {
-		// 	  put_pixel(sdl->screen, i % TEX_WIDTH, i / TEX_HEIGHT, get_pixel(sdl->texture, i % TEX_WIDTH, i / TEX_HEIGHT));
-		//   }
-	sdl->wall_dist = perpWallDist;
-	if (!hit)
-	{
-		color = 0xFF0000;
-		for (int i = 0; i <= sdl->pixelation; i++)
-			draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
-	}
-	else
-	  for (int i = 0; i <= sdl->pixelation; i++)
-		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, 0xFF0000 - (int)(0xFF0000 / perpWallDist));
-		  draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+			texX = sdl->textures[wall_side]->w - texX - 1;
+			//draw the pixels of the stripe as a vertical line
+			//verLine(x, drawStart, drawEnd, color);
+			color = get_pixel(sdl->textures[0], texX, 50);
+			sdl->wall_dist = perpWallDist;
+			for (int i = 0; i <= sdl->pixelation; i++)
+				draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+		}
 	}
 }
 
@@ -481,6 +483,7 @@ void	open_textures(t_sdl *sdl)
 	textures_amount = 0;
 	while (textures[textures_amount])
 		textures_amount++;
+	sdl->textures_amount = textures_amount ? textures_amount : -1;
 	if (!(sdl->textures = (SDL_Surface**)ft_memalloc(sizeof(SDL_Surface*)
 		* textures_amount)))
 		handle_error("Malloc failed");
