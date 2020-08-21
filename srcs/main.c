@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 18:25:44 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 18:55:15 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,6 @@ void draw_map(t_sdl *sdl)
 		}
 		else
 		{
-			ft_printf("%d\n", sdl->textures_amount);
 			//x coordinate on the texture
 			int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
 
