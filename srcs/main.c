@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 11:54:53 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 12:24:50 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,11 @@ void		set_spawn_point(t_player *player, t_map *map)
 		col = 0;
 		while (col < map->cols)
 		{
-
 			if (map->map[row][col] == SPAWN_POINT)
 			{
 				player->spawn_x = (double)col;
 				player->spawn_y = (double)row;
-				return;
+				return ;
 			}
 			col++;
 		}
@@ -97,7 +96,7 @@ t_player	*init_player(t_map *map)
 	player->posX = player->spawn_x + 0.5;
 	player->posY = player->spawn_y + 0.5;
 	ft_printf("Player spawned at %f %f\n", player->posX, player->posY);
-	player->dirX = 1;//-0.5;
+	player->dirX = 1;
 	player->dirY = 0.000001;
 	player->planeX = 0;
 	player->planeY = 0.66;
@@ -111,8 +110,9 @@ void	put_pixel(SDL_Surface *screen, int x, int y, int color)
 	int *pixel;
 
 	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1 || x < 0 || y < 0)
-		return;
-	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
+		return ;
+	pixel = screen->pixels + y * screen->pitch +
+		x * screen->format->BytesPerPixel;
 	*pixel = color;
 }
 
@@ -121,30 +121,28 @@ void	put_minimap_pixel(SDL_Surface *screen, int x, int y, int color)
 	int *pixel;
 
 	if (x > 240 || y > 240 || x < 30 || y < 30)
-		return;
-	pixel = screen->pixels + y * screen->pitch + x * screen->format->BytesPerPixel;
+		return ;
+	pixel = screen->pixels + y * screen->pitch +
+		x * screen->format->BytesPerPixel;
 	*pixel = color;
 }
 
 int		get_pixel(SDL_Surface *screen, int x, int y)
 {
-	int *pixel;
+	int		*pixel;
 	Uint8	red;
-	Uint8 green;
-	Uint8 blue;
-	Uint8 bpp;
+	Uint8	green;
+	Uint8	blue;
+	Uint8	bpp;
 
 	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1)
-	{
-		//ft_printf("x: %d, y: %d\n", x, y);
-		return 0;
-	}
+		return (0);
 	bpp = screen->format->BytesPerPixel;
 	pixel = screen->pixels + y * screen->pitch + x * bpp;
 	if (bpp == 1)
 		SDL_GetRGB((Uint8)*pixel, screen->format, &red, &green, &blue);
 	else if (bpp == 2)
-		SDL_GetRGB((Uint16)*pixel, screen->format, &red, &green, &blue);
+		SDL_GetRGB((Uint16) * pixel, screen->format, &red, &green, &blue);
 	else
 		SDL_GetRGB(*pixel, screen->format, &red, &green, &blue);
 	return (red * 256 * 256 + green * 256 + blue);
@@ -153,37 +151,43 @@ int		get_pixel(SDL_Surface *screen, int x, int y)
 void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
 int x[2], int y[2])
 {
+	int		tex_y;
+	double	step;
+	double	tex_pos;
 
-		double step = 1.0 * sdl->texture->h / (y[1] - y[0]);
-		double texPos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
+	step = 1.0 * sdl->texture->h / (y[1] - y[0]);
+	tex_pos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
 	if (y[0] < 0 - sdl->player->cam_height)
 	{
-		texPos = texPos + step * abs(y[0] + sdl->player->cam_height);
+		tex_pos = tex_pos + step * abs(y[0] + sdl->player->cam_height);
 		y[0] = 0 - sdl->player->cam_height;
 	}
 	if (y[1] > SCREEN_HEIGHT)
 		y[1] = SCREEN_HEIGHT;
 	while (y[0] < y[1])
 	{
-		int texY = (int)texPos & (sdl->texture->h - 1);
-		//put_pixel(sdl->screen, x, scale(i, (int[2]){0, TEX_HEIGHT}, (int[2]){y[0], y[1]}), get_pixel(texture, x, i));
-		//put_pixel(sdl->screen, x[0], i, get_pixel(texture, x[1], scale(i, (int[2]){0, TEX_HEIGHT - 1}, (int[2]){y[0], y[1]})));
-		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height, get_pixel(texture, x[1], texY));
-		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height, sdl->wall_dist);
-		texPos += step;
+		tex_y = (int)tex_pos & (sdl->texture->h - 1);
+		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
+			get_pixel(texture, x[1], tex_y));
+		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
+			sdl->wall_dist);
+		tex_pos += step;
 		y[0]++;
 	}
 }
 
 void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 {
-
 	(void)color;
 	y[0] += sdl->player->cam_height;
 	y[1] += sdl->player->cam_height;
 	while (y[0] < y[1])
 		modify_pixel_add(sdl->screen, x, y[0]++, OUT_OF_BOUNDS_COLOR);
 }
+
+/*
+** Fix norm in this function once we completely understand how it works
+*/
 
 void	draw_map(t_sdl *sdl)
 {
@@ -364,7 +368,8 @@ void	draw_fps(t_sdl *sdl)
 			SDL_FreeSurface(sdl->text_surface);
 		if (text)
 			free(text);
-		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC / (sdl->time_now - sdl->time_prev));
+		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC /
+			(sdl->time_now - sdl->time_prev));
 		sdl->text_surface = TTF_RenderText_Shaded(sdl->font, text,
 		(SDL_Color){255, 255, 255, 0}, (SDL_Color){0, 0, 0, 0});
 	}
@@ -372,10 +377,13 @@ void	draw_fps(t_sdl *sdl)
 	sdl->time_prev = sdl->time_now;
 }
 
-//Takes as parameter the function to use, to either draw a certain color or modify an already
-//existing pixel
+/*
+** Takes as parameter the function to use, to either draw a certain color or
+** modify an already existing pixel
+*/
 
-void	draw_box(SDL_Surface *screen, int xywh[4], int color, void (*f)(SDL_Surface*, int, int, int))
+void	draw_box(SDL_Surface *screen, int xywh[4], int color,
+void (*f)(SDL_Surface*, int, int, int))
 {
 	int x;
 	int y;
@@ -407,30 +415,25 @@ void	draw_minimap_map(t_sdl *sdl)
 		while (col < sdl->map->cols)
 		{
 			if (sdl->map->map[row][col] == 1)
-				draw_box(sdl->screen, (int[4]){(col - sdl->player->posX) * 210 / blocks_visible + 120,
+				draw_box(sdl->screen,
+				(int[4]){(col - sdl->player->posX) * 210 / blocks_visible + 120,
 				(row - sdl->player->posY) * 210 / blocks_visible + 120,
 				210 / blocks_visible,
 				210 / blocks_visible},
-				0x888888,  &put_minimap_pixel);
+				0x888888, &put_minimap_pixel);
 			col++;
 		}
 		row++;
 	}
 }
 
-
 void	draw_minimap(t_sdl *sdl)
 {
-	draw_box(sdl->screen, (int[4]){25, 25, 220, 220}, 0x333333,  &put_pixel);
-	draw_box(sdl->screen, (int[4]){30, 30, 210, 210}, 0x999999,  &modify_pixel_remove);
+	draw_box(sdl->screen, (int[4]){25, 25, 220, 220}, 0x333333, &put_pixel);
+	draw_box(sdl->screen, (int[4]){30, 30, 210, 210}, 0x999999,
+		&modify_pixel_remove);
 	draw_minimap_map(sdl);
 	draw_box(sdl->screen, (int[4]){115, 115, 10, 10}, 0xFF0000, &put_pixel);
-	// draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1) / sdl->map->cols),
-	// 30 + 170 * ((sdl->player->posY - 1) / sdl->map->rows),
-	// 5, 5}, 0xFF0000,  &put_pixel);
-	// draw_box(sdl->screen, (int[4]){30 + 170 * ((sdl->player->posX -1 + sdl->player->dirX) / sdl->map->cols),
-	// 30 + 170 * ((sdl->player->posY - 1 + sdl->player->dirY) / sdl->map->rows),
-	// 5, 5}, 0x00FF00,  &put_pixel);
 }
 
 void	update_player_speed(t_sdl *sdl)
@@ -460,7 +463,8 @@ void	draw_loading_screen(t_sdl *sdl)
 	if (!sdl->text_surface)
 		sdl->text_surface = TTF_RenderText_Solid(sdl->font, "Loading...",
 			(SDL_Color){255, 255, 255, 0});
-	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, &(SDL_Rect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 50, 50});
+	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen,
+		&(SDL_Rect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 50, 50});
 	sdl->time_prev = sdl->time_now;
 }
 
@@ -472,23 +476,40 @@ void	open_textures(t_sdl *sdl)
 
 void	handle_player_turning(t_sdl *sdl)
 {
+	double old_dir_x;
+	double old_plane_x;
+
+	old_dir_x = sdl->player->dirX;
+	old_plane_x = sdl->player->planeX;
 	if (sdl->input.right)
 	{
-		double oldDirX = sdl->player->dirX;
-		sdl->player->dirX = sdl->player->dirX * cos(-sdl->player->rotation_speed) - sdl->player->dirY * sin(-sdl->player->rotation_speed);
-		sdl->player->dirY = oldDirX * sin(-sdl->player->rotation_speed) + sdl->player->dirY * cos(-sdl->player->rotation_speed);
-		double oldPlaneX = sdl->player->planeX;
-		sdl->player->planeX = sdl->player->planeX * cos(-sdl->player->rotation_speed) - sdl->player->planeY * sin(-sdl->player->rotation_speed);
-		sdl->player->planeY = oldPlaneX * sin(-sdl->player->rotation_speed) + sdl->player->planeY * cos(-sdl->player->rotation_speed);
+		sdl->player->dirX = sdl->player->dirX *
+			cos(-sdl->player->rotation_speed) -
+			sdl->player->dirY * sin(-sdl->player->rotation_speed);
+		sdl->player->dirY = old_dir_x *
+			sin(-sdl->player->rotation_speed) +
+				sdl->player->dirY * cos(-sdl->player->rotation_speed);
+		sdl->player->planeX = sdl->player->planeX *
+			cos(-sdl->player->rotation_speed) -
+				sdl->player->planeY * sin(-sdl->player->rotation_speed);
+		sdl->player->planeY = old_plane_x *
+			sin(-sdl->player->rotation_speed) +
+				sdl->player->planeY * cos(-sdl->player->rotation_speed);
 	}
 	if (sdl->input.left)
 	{
-		double oldDirX = sdl->player->dirX;
-		sdl->player->dirX = sdl->player->dirX * cos(sdl->player->rotation_speed) - sdl->player->dirY * sin(sdl->player->rotation_speed);
-		sdl->player->dirY = oldDirX * sin(sdl->player->rotation_speed) + sdl->player->dirY * cos(sdl->player->rotation_speed);
-		double oldPlaneX = sdl->player->planeX;
-		sdl->player->planeX = sdl->player->planeX * cos(sdl->player->rotation_speed) - sdl->player->planeY * sin(sdl->player->rotation_speed);
-		sdl->player->planeY = oldPlaneX * sin(sdl->player->rotation_speed) + sdl->player->planeY * cos(sdl->player->rotation_speed);
+		sdl->player->dirX = sdl->player->dirX *
+			cos(sdl->player->rotation_speed) -
+				sdl->player->dirY * sin(sdl->player->rotation_speed);
+		sdl->player->dirY = old_dir_x *
+			sin(sdl->player->rotation_speed) +
+				sdl->player->dirY * cos(sdl->player->rotation_speed);
+		sdl->player->planeX = sdl->player->planeX *
+			cos(sdl->player->rotation_speed) -
+				sdl->player->planeY * sin(sdl->player->rotation_speed);
+		sdl->player->planeY = old_plane_x *
+			sin(sdl->player->rotation_speed) +
+				sdl->player->planeY * cos(sdl->player->rotation_speed);
 	}
 }
 
@@ -496,21 +517,51 @@ void	handle_player_walking(t_sdl *sdl)
 {
 	if (sdl->input.up)
 	{
-		if (sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
-		if (sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
+		if (sdl->player->posY + sdl->player->dirY *
+			sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) <
+				sdl->map->rows && sdl->player->posY +
+					sdl->player->dirY * sdl->player->move_speed +
+						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY +
+				sdl->player->dirY * sdl->player->move_speed +
+					(sdl->player->dirY >
+						0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
+				sdl->player->posY += sdl->player->dirY *
+					sdl->player->move_speed;
+		if (sdl->player->posX + sdl->player->dirX *
+			sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) <
+				sdl->map->cols && sdl->player->posX + sdl->player->dirX *
+					sdl->player->move_speed + (sdl->player->dirX >
+						0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX
+				+ sdl->player->dirX * sdl->player->move_speed +
+					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->posX += sdl->player->dirX *
+					sdl->player->move_speed;
 	}
 	if (sdl->input.down)
 	{
-		if (sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
-		if (sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
+		if (sdl->player->posY - sdl->player->dirY *
+			sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) <
+				sdl->map->rows && sdl->player->posY -
+					sdl->player->dirY * sdl->player->move_speed -
+						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY -
+				sdl->player->dirY * sdl->player->move_speed -
+					(sdl->player->dirY >
+						0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
+				sdl->player->posY -= sdl->player->dirY *
+					sdl->player->move_speed;
+		if (sdl->player->posX - sdl->player->dirX *
+			sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) <
+				sdl->map->cols && sdl->player->posX -
+					sdl->player->dirX * sdl->player->move_speed -
+						(sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX
+				- sdl->player->dirX * sdl->player->move_speed -
+					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->posX -= sdl->player->dirX *
+					sdl->player->move_speed;
 	}
 }
 
@@ -528,11 +579,48 @@ void	handle_player_movement(t_sdl *sdl)
 		player_crouch(sdl->player, 0);
 }
 
+void	handle_keys_down(t_sdl *sdl)
+{
+	if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
+		close_sdl(sdl);
+	if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
+		sdl->input.left = 1;
+	if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
+		sdl->input.right = 1;
+	if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
+		sdl->input.up = 1;
+	if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
+		sdl->input.down = 1;
+	if (sdl->e.key.keysym.sym == SDLK_SPACE)
+		sdl->input.jump = 1;
+	if (sdl->e.key.keysym.sym == SDLK_e)
+		sdl->pixelation++;
+	if (sdl->e.key.keysym.sym == SDLK_q)
+		sdl->pixelation ? sdl->pixelation-- : (void)sdl->pixelation;
+	if (sdl->e.key.keysym.sym == SDLK_LCTRL)
+		sdl->input.crouch = 1;
+}
+
+void	handle_keys_up(t_sdl *sdl)
+{
+	if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
+		sdl->input.left = 0;
+	if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
+		sdl->input.right = 0;
+	if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
+		sdl->input.up = 0;
+	if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
+		sdl->input.down = 0;
+	if (sdl->e.key.keysym.sym == SDLK_LCTRL)
+		sdl->input.crouch = 0;
+}
+
 int		main(int argc, char **argv)
 {
-	t_sdl *sdl;
-	int	loading = 1;
+	t_sdl	*sdl;
+	int		loading;
 
+	loading = 1;
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
@@ -559,39 +647,9 @@ int		main(int argc, char **argv)
 			if (sdl->e.type == SDL_QUIT)
 				close_sdl(sdl);
 			else if (sdl->e.type == SDL_KEYDOWN)
-			{
-				if (sdl->e.key.keysym.sym == SDLK_ESCAPE)
-					break ;
-				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					sdl->input.left = 1;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
-					sdl->input.right = 1;
-				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
-					sdl->input.up = 1;
-				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
-					sdl->input.down = 1;
-				if (sdl->e.key.keysym.sym == SDLK_SPACE)
-					sdl->input.jump = 1;
-				if (sdl->e.key.keysym.sym == SDLK_e)
-					sdl->pixelation++;
-				if (sdl->e.key.keysym.sym == SDLK_q)
-					sdl->pixelation ? sdl->pixelation-- : (void)sdl->pixelation;
-				if (sdl->e.key.keysym.sym == SDLK_LCTRL)
-					sdl->input.crouch = 1;
-			}
+				handle_keys_down(sdl);
 			else if (sdl->e.type == SDL_KEYUP)
-			{
-				if (sdl->e.key.keysym.sym == SDLK_RIGHT || sdl->e.key.keysym.sym == SDLK_d)
-					sdl->input.left = 0;
-				if (sdl->e.key.keysym.sym == SDLK_LEFT || sdl->e.key.keysym.sym == SDLK_a)
-					sdl->input.right = 0;
-				if (sdl->e.key.keysym.sym == SDLK_UP || sdl->e.key.keysym.sym == SDLK_w)
-					sdl->input.up = 0;
-				if (sdl->e.key.keysym.sym == SDLK_DOWN || sdl->e.key.keysym.sym == SDLK_s)
-					sdl->input.down = 0;
-				if (sdl->e.key.keysym.sym == SDLK_LCTRL)
-					sdl->input.crouch = 0;
-			}
+				handle_keys_up(sdl);
 		}
 		handle_player_movement(sdl);
 	}
