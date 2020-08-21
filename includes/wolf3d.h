@@ -16,8 +16,6 @@
 # define SCREEN_WIDTH	1024
 # define SCREEN_HEIGHT	680
 # define PROGRAM_TITLE	"Wolf3D"
-# define TEXTURES "wall.png stone.png alex.png white.png"
-# define TEXTURES_FOLDER "textures/"
 
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
@@ -29,8 +27,20 @@
 
 #include <stdio.h> //
 
-#define STEP_DIST_X		1
-#define STEP_DIST_Y		1
+/*
+** Textures/visuals
+*/
+
+#define TEXTURE_1 "wall.png"
+#define TEXTURE_2 "stone.png"
+#define TEXTURE_3 "alex.png"
+#define TEXTURE_4 "white.png"
+
+#define TEXTURES	TEXTURE_1 " "\
+					TEXTURE_2 " "\
+					TEXTURE_3 " "\
+					TEXTURE_4 " "
+#define TEXTURES_FOLDER "textures/"
 #define LIGHTING_INTENSITY 1
 #define OUT_OF_BOUNDS_COLOR 0x550000
 
@@ -44,6 +54,8 @@
 #define ROTATION_SPEED 0.05;
 #define SPAWN_POINT -1
 
+#define STEP_DIST_X		1
+#define STEP_DIST_Y		1
 
 typedef	struct			s_texture
 {
