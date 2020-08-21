@@ -470,6 +470,64 @@ void	open_textures(t_sdl *sdl)
 		handle_error("Texture not found");
 }
 
+void	handle_player_turning(t_sdl *sdl)
+{
+	if (sdl->input.right)
+	{
+		double oldDirX = sdl->player->dirX;
+		sdl->player->dirX = sdl->player->dirX * cos(-sdl->player->rotation_speed) - sdl->player->dirY * sin(-sdl->player->rotation_speed);
+		sdl->player->dirY = oldDirX * sin(-sdl->player->rotation_speed) + sdl->player->dirY * cos(-sdl->player->rotation_speed);
+		double oldPlaneX = sdl->player->planeX;
+		sdl->player->planeX = sdl->player->planeX * cos(-sdl->player->rotation_speed) - sdl->player->planeY * sin(-sdl->player->rotation_speed);
+		sdl->player->planeY = oldPlaneX * sin(-sdl->player->rotation_speed) + sdl->player->planeY * cos(-sdl->player->rotation_speed);
+	}
+	if (sdl->input.left)
+	{
+		double oldDirX = sdl->player->dirX;
+		sdl->player->dirX = sdl->player->dirX * cos(sdl->player->rotation_speed) - sdl->player->dirY * sin(sdl->player->rotation_speed);
+		sdl->player->dirY = oldDirX * sin(sdl->player->rotation_speed) + sdl->player->dirY * cos(sdl->player->rotation_speed);
+		double oldPlaneX = sdl->player->planeX;
+		sdl->player->planeX = sdl->player->planeX * cos(sdl->player->rotation_speed) - sdl->player->planeY * sin(sdl->player->rotation_speed);
+		sdl->player->planeY = oldPlaneX * sin(sdl->player->rotation_speed) + sdl->player->planeY * cos(sdl->player->rotation_speed);
+	}
+}
+
+void	handle_player_walking(t_sdl *sdl)
+{
+	if (sdl->input.up)
+	{
+		if (sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
+				sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
+		if (sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
+	}
+	if (sdl->input.down)
+	{
+		if (sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
+				sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
+		if (sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
+	}
+}
+
+void	handle_player_movement(t_sdl *sdl)
+{
+	if (sdl->input.left || sdl->input.right)
+		handle_player_turning(sdl);
+	if (sdl->input.up || sdl->input.down)
+		handle_player_walking(sdl);
+	if (sdl->input.jump)
+		player_jump(sdl->player, &sdl->input.jump);
+	if (sdl->input.crouch)
+		player_crouch(sdl->player, 1);
+	else if (sdl->player->crouching)
+		player_crouch(sdl->player, 0);
+}
+
 int		main(int argc, char **argv)
 {
 	t_sdl *sdl;
@@ -535,49 +593,7 @@ int		main(int argc, char **argv)
 					sdl->input.crouch = 0;
 			}
 		}
-		if (sdl->input.right)
-		{
-			double oldDirX = sdl->player->dirX;
-			sdl->player->dirX = sdl->player->dirX * cos(-sdl->player->rotation_speed) - sdl->player->dirY * sin(-sdl->player->rotation_speed);
-			sdl->player->dirY = oldDirX * sin(-sdl->player->rotation_speed) + sdl->player->dirY * cos(-sdl->player->rotation_speed);
-			double oldPlaneX = sdl->player->planeX;
-			sdl->player->planeX = sdl->player->planeX * cos(-sdl->player->rotation_speed) - sdl->player->planeY * sin(-sdl->player->rotation_speed);
-			sdl->player->planeY = oldPlaneX * sin(-sdl->player->rotation_speed) + sdl->player->planeY * cos(-sdl->player->rotation_speed);
-		}
-		if (sdl->input.left)
-		{
-			double oldDirX = sdl->player->dirX;
-			sdl->player->dirX = sdl->player->dirX * cos(sdl->player->rotation_speed) - sdl->player->dirY * sin(sdl->player->rotation_speed);
-			sdl->player->dirY = oldDirX * sin(sdl->player->rotation_speed) + sdl->player->dirY * cos(sdl->player->rotation_speed);
-			double oldPlaneX = sdl->player->planeX;
-			sdl->player->planeX = sdl->player->planeX * cos(sdl->player->rotation_speed) - sdl->player->planeY * sin(sdl->player->rotation_speed);
-			sdl->player->planeY = oldPlaneX * sin(sdl->player->rotation_speed) + sdl->player->planeY * cos(sdl->player->rotation_speed);
-		}
-		if (sdl->input.up)
-		{
-			if (sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3)< sdl->map->rows && sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-				if (sdl->map->map[(int)(sdl->player->posY + sdl->player->dirY * sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-					sdl->player->posY += sdl->player->dirY * sdl->player->move_speed;
-			if (sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
-				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX + sdl->player->dirX * sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-					sdl->player->posX += sdl->player->dirX * sdl->player->move_speed;
-		}
-		if (sdl->input.down)
-		{
-			if (sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) < sdl->map->rows && sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-				if (sdl->map->map[(int)(sdl->player->posY - sdl->player->dirY * sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-					sdl->player->posY -= sdl->player->dirY * sdl->player->move_speed;
-			if (sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) < sdl->map->cols && sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
-				if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX - sdl->player->dirX * sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->posX -= sdl->player->dirX * sdl->player->move_speed;
-		}
-		if (sdl->input.jump)
-			player_jump(sdl->player, &sdl->input.jump);		
-		if (sdl->input.crouch)
-			player_crouch(sdl->player, 1);
-		else if (sdl->player->crouching)
-			player_crouch(sdl->player, 0);
-		//clear_surface(sdl->screen);
+		handle_player_movement(sdl);
 	}
 	close_sdl(sdl);
 }
