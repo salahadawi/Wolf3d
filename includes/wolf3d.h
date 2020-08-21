@@ -16,6 +16,7 @@
 # define SCREEN_WIDTH	1024
 # define SCREEN_HEIGHT	680
 # define PROGRAM_TITLE	"Wolf3D"
+#define NUM_THREADS     16
 
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
@@ -24,6 +25,7 @@
 # include <SDL_image.h>
 # include <SDL_ttf.h>
 # include <time.h>
+# include <pthread.h>
 
 #include <stdio.h> //
 
@@ -123,6 +125,15 @@ typedef struct		s_sdl
 	int				textures_amount;
 }					t_sdl;
 
+typedef struct	s_thread
+{
+	t_sdl		*sdl;
+	SDL_Surface	*tex;
+	int			x[2];
+	int			y[2];
+}				t_thread;
+
+
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);
 
 void	handle_error(char *message);
@@ -140,5 +151,10 @@ void	modify_pixel_remove(SDL_Surface *screen, int x, int y, int color);
 void	modify_pixel_add(SDL_Surface *screen, int x, int y, int color);
 
 void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist);
+
+void	*thread_draw(void *data);
+
+void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
+										int x[2], int y[2]);
 
 #endif

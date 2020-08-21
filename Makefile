@@ -25,7 +25,7 @@ LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf \
 -L ~/.brew/Cellar/sdl2/2.0.12_1/lib/ \
 -L ~/.brew/Cellar/sdl2_image/2.0.5/lib/ \
 -L ~/.brew/Cellar/sdl2_ttf/2.0.15/lib/
-LIBS_LINUX = -lm -lSDL2 -lSDL2_image -lSDL2_ttf
+LIBS_LINUX = -lm -lSDL2 -lSDL2_image -lSDL2_ttf -pthread
 
 all:
 	@$(RUN_LIB)

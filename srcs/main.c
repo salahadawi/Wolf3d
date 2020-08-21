@@ -148,15 +148,29 @@ int		get_pixel(SDL_Surface *screen, int x, int y)
 	return (red * 256 * 256 + green * 256 + blue);
 }
 
+void	*thread_draw(void *data)
+{
+	t_thread	*td;
+
+	td = data;
+	t_sdl *sdl = td->sdl;
+	SDL_Surface	*tex = td->tex;
+
+	draw_vertical_line_from_image(sdl, tex, td->x, td->y);
+	return (NULL);
+}
+
 void	draw_vertical_line_from_image(t_sdl *sdl, SDL_Surface *texture,
 int x[2], int y[2])
 {
 	int tex_y;
 	double step;
 	double tex_pos;
-
+	
 	step = 1.0 * texture->h / (y[1] - y[0]);
+	
 	tex_pos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
+	
 	if (y[0] < 0 - sdl->player->cam_height)
 	{
 		tex_pos = tex_pos + step * abs(y[0] + sdl->player->cam_height);
@@ -309,7 +323,7 @@ void draw_map(t_sdl *sdl)
 		}
 		else
 		{
-			ft_printf("%d\n", sdl->textures_amount);
+			//ft_printf("%d\n", sdl->textures_amount);
 			//x coordinate on the texture
 			int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
 
@@ -318,8 +332,44 @@ void draw_map(t_sdl *sdl)
 			//verLine(x, drawStart, drawEnd, color);
 			color = get_pixel(sdl->textures[0], texX, 50);
 			sdl->wall_dist = perpWallDist;
-			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+
+
+			pthread_t	thread_id[NUM_THREADS];
+			t_thread	threads[NUM_THREADS];
+			int rc;
+			int t;
+			
+			sdl->pixelation = NUM_THREADS - 1;
+			for(int i = 0; i <= sdl->pixelation; i++){
+			//for(int i = 0; i < NUM_THREADS; i++){
+				t = i % NUM_THREADS;
+				
+				threads[t].sdl = sdl;
+				threads[t].tex = sdl->textures[wall_side];
+				threads[t].x[0] = x + i;
+				threads[t].x[1] = texX;
+				threads[t].y[0] = drawStart;
+				threads[t].y[1] = drawEnd;
+				rc = pthread_create(&thread_id[t], NULL, thread_draw, &threads[t]);
+				if (rc){
+					ft_printf("ERROR; return code from pthread_create() is %d\n", rc);
+					exit(-1);
+				}
+				if (t == NUM_THREADS -1)
+				{
+					int j = 0;
+					while (j < NUM_THREADS)
+					{
+						pthread_join(thread_id[j], NULL);
+						j++;
+					}
+				}
+			
+			}
+
+			
+			//for (int i = 0; i <= sdl->pixelation; i++)
+			//	draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 		}
 	}
 }
@@ -680,4 +730,5 @@ int		main(int argc, char **argv)
 		handle_player_movement(sdl);
 	}
 	close_sdl(sdl);
+	pthread_exit(NULL);
 }
