@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 12:45:30 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 13:21:56 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # define SCREEN_WIDTH	1024
 # define SCREEN_HEIGHT	680
 # define PROGRAM_TITLE	"Wolf3D"
+# define TEXTURES "wall.png stone.png alex.png white.png"
+# define TEXTURES_FOLDER "textures/"
 
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
@@ -103,7 +105,7 @@ typedef struct		s_sdl
 	unsigned int	*tex;
 	t_input			input;
 	int				pixelation;
-	SDL_Surface		*texture;
+	SDL_Surface		**textures;
 	double			wall_dist;
 	int				loading_done;
 }					t_sdl;
