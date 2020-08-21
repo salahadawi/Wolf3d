@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_movement.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 17:34:04 by alcohen           #+#    #+#             */
-/*   Updated: 2020/08/20 18:25:48 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/21 12:02:16 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,11 @@ void	player_crouch(t_player *player, int crouch)
 			player->cam_height = -CROUCH_AMT;
 		}
 		player->crouching = 1;
-		
 	}
 	else
 	{
 		player->busy = 0;
 		player->cam_height = 0;
 		player->crouching = 0;
-	} 
+	}
 }
