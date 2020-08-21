@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 12:57:04 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 13:23:59 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ int x[2], int y[2])
 	double	step;
 	double	tex_pos;
 
-	step = 1.0 * sdl->texture->h / (y[1] - y[0]);
+	step = 1.0 * sdl->textures[0]->h / (y[1] - y[0]);
 	tex_pos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
 	if (y[0] < 0 - sdl->player->cam_height)
 	{
@@ -166,7 +166,7 @@ int x[2], int y[2])
 		y[1] = SCREEN_HEIGHT;
 	while (y[0] < y[1])
 	{
-		tex_y = (int)tex_pos & (sdl->texture->h - 1);
+		tex_y = (int)tex_pos & (sdl->textures[0]->h - 1);
 		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
 			get_pixel(texture, x[1], tex_y));
 		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
@@ -295,13 +295,13 @@ void	draw_map(t_sdl *sdl)
 	wallX -= floor((wallX));
 
 	//x coordinate on the texture
-	int texX = (int)(wallX * (double)sdl->texture->w);
+	int texX = (int)(wallX * (double)sdl->textures[0]->w);
 
-	texX = sdl->texture->w - texX - 1;
+	texX = sdl->textures[0]->w - texX - 1;
 
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
-	  color = get_pixel(sdl->texture, texX, 50);//sdl->tex[texX];
+	  color = get_pixel(sdl->textures[0], texX, 50);//sdl->tex[texX];
 		//   for (int i = 0; i < TEX_HEIGHT * TEX_WIDTH; i++)
 		//   {
 		// 	  put_pixel(sdl->screen, i % TEX_WIDTH, i / TEX_HEIGHT, get_pixel(sdl->texture, i % TEX_WIDTH, i / TEX_HEIGHT));
@@ -316,7 +316,7 @@ void	draw_map(t_sdl *sdl)
 	else
 	  for (int i = 0; i <= sdl->pixelation; i++)
 		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, 0xFF0000 - (int)(0xFF0000 / perpWallDist));
-		  draw_vertical_line_from_image(sdl, sdl->texture, (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+		  draw_vertical_line_from_image(sdl, sdl->textures[0], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 	}
 }
 
@@ -470,8 +470,30 @@ void	draw_loading_screen(t_sdl *sdl)
 
 void	open_textures(t_sdl *sdl)
 {
-	if (!(sdl->texture = IMG_Load("textures/wall.png")))
-		handle_error("Texture not found");
+	int		i;
+	int		textures_amount;
+	char	**textures;
+	char	*texture_path;
+
+	textures = ft_strsplit(TEXTURES, ' ');
+	textures_amount = 0;
+	while (textures[textures_amount])
+		textures_amount++;
+	if (!(sdl->textures = (SDL_Surface**)ft_memalloc(sizeof(SDL_Surface*)
+		* textures_amount)))
+		handle_error("Malloc failed");
+	i = 0;
+	while (i < textures_amount)
+	{
+		texture_path = ft_strjoin(TEXTURES_FOLDER, textures[i]);
+		if (!(sdl->textures[i++] = IMG_Load(texture_path)))
+			handle_error("Texture not found");
+		free(texture_path);
+	}
+	i = 0;
+	while (textures[i])
+		free(textures[i++]);
+	free(textures);
 }
 
 void	handle_player_turning(t_sdl *sdl)
