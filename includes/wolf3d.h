@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 15:32:00 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 17:21:30 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,5 +140,9 @@ void	modify_pixel_remove(SDL_Surface *screen, int x, int y, int color);
 void	modify_pixel_add(SDL_Surface *screen, int x, int y, int color);
 
 void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist);
+
+void	put_pixel(SDL_Surface *screen, int x, int y, int color);
+
+void	draw_line(t_sdl *sdl, int x[2], int y[2], int color);
 
 #endif
