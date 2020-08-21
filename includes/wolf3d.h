@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/20 19:59:25 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 12:45:30 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ typedef struct		s_sdl
 	int				pixelation;
 	SDL_Surface		*texture;
 	double			wall_dist;
+	int				loading_done;
 }					t_sdl;
 
 void	handle_arguments(t_sdl *sdl, int argc, char **argv);

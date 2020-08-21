@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 12:24:50 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 12:57:04 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -618,9 +618,7 @@ void	handle_keys_up(t_sdl *sdl)
 int		main(int argc, char **argv)
 {
 	t_sdl	*sdl;
-	int		loading;
 
-	loading = 1;
 	sdl = init();
 	handle_arguments(sdl, argc, argv);
 	sdl->player = init_player(sdl->map);
@@ -628,10 +626,11 @@ int		main(int argc, char **argv)
 	open_textures(sdl);
 	while (1)
 	{
-		if (loading)
+		if (!sdl->loading_done)
 		{
 			draw_loading_screen(sdl);
-			loading = 0;
+			sdl->loading_done = 1;
+			SDL_RaiseWindow(sdl->window);
 		}
 		else
 		{
