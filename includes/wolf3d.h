@@ -131,6 +131,7 @@ typedef struct	s_thread
 	SDL_Surface	*tex;
 	int			x[2];
 	int			y[2];
+	int			id;
 }				t_thread;
 
 

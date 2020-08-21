@@ -155,7 +155,6 @@ void	*thread_draw(void *data)
 	td = data;
 	t_sdl *sdl = td->sdl;
 	SDL_Surface	*tex = td->tex;
-
 	draw_vertical_line_from_image(sdl, tex, td->x, td->y);
 	return (NULL);
 }
@@ -206,7 +205,7 @@ void draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 void draw_map(t_sdl *sdl)
 {
 	int wall_side;
-	for (int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
+	for (int x = 0; x < SCREEN_WIDTH; x += NUM_THREADS)
 	{
 		//calculate ray position and direction
 		double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
@@ -337,19 +336,18 @@ void draw_map(t_sdl *sdl)
 			pthread_t	thread_id[NUM_THREADS];
 			t_thread	threads[NUM_THREADS];
 			int rc;
-			int t;
-			
-			sdl->pixelation = NUM_THREADS - 1;
-			for(int i = 0; i <= sdl->pixelation; i++){
-			//for(int i = 0; i < NUM_THREADS; i++){
-				t = i % NUM_THREADS;
-				
+
+			int t = 0;
+
+			while (t < NUM_THREADS)
+			{
 				threads[t].sdl = sdl;
 				threads[t].tex = sdl->textures[wall_side];
-				threads[t].x[0] = x + i;
+				threads[t].x[0] = x + t;
 				threads[t].x[1] = texX;
 				threads[t].y[0] = drawStart;
 				threads[t].y[1] = drawEnd;
+				threads[t].id = t;
 				rc = pthread_create(&thread_id[t], NULL, thread_draw, &threads[t]);
 				if (rc){
 					ft_printf("ERROR; return code from pthread_create() is %d\n", rc);
@@ -364,7 +362,13 @@ void draw_map(t_sdl *sdl)
 						j++;
 					}
 				}
-			
+				t++;
+			}
+
+			sdl->pixelation = NUM_THREADS - 1;
+			for(int i = 0; i <= sdl->pixelation; i++){
+			//for(int i = 0; i < NUM_THREADS; i++){
+				
 			}
 
 			
