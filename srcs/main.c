@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 13:23:59 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 13:49:54 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ int x[2], int y[2])
 	double	step;
 	double	tex_pos;
 
-	step = 1.0 * sdl->textures[0]->h / (y[1] - y[0]);
+	step = 1.0 * texture->h / (y[1] - y[0]);
 	tex_pos = (y[0] - SCREEN_HEIGHT / 2 + (y[1] - y[0]) / 2) * step;
 	if (y[0] < 0 - sdl->player->cam_height)
 	{
@@ -166,7 +166,7 @@ int x[2], int y[2])
 		y[1] = SCREEN_HEIGHT;
 	while (y[0] < y[1])
 	{
-		tex_y = (int)tex_pos & (sdl->textures[0]->h - 1);
+		tex_y = (int)tex_pos & (texture->h - 1);
 		put_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
 			get_pixel(texture, x[1], tex_y));
 		add_fog_to_pixel(sdl->screen, x[0], y[0] + sdl->player->cam_height,
@@ -191,6 +191,7 @@ void	draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 
 void	draw_map(t_sdl *sdl)
 {
+	int		wall_side;
 	for(int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
     {
       //calculate ray position and direction
@@ -280,24 +281,25 @@ void	draw_map(t_sdl *sdl)
 	double wallX; //where exactly the wall was hit
 	if (side == 0)
 	{
-		// if (mapX - sdl->player->posX > 0)
-		// {
-		// 	color = sdl->tex[(int)(sdl->player->posX) % (TEX_WIDTH / 4)];
+		wall_side = 0;
+		if (mapX - sdl->player->posX > 0)
+			wall_side = 1;
 			wallX = sdl->player->posY + perpWallDist * rayDirY;
+
 	}
 	if (side == 1)
 	{
-		// if (mapY - sdl->player->posY > 0)
-		// 	color = color / 5;
-		// color = color / 2;
+		wall_side = 2;
+		if (mapY - sdl->player->posY > 0)
+			wall_side = 3;
 		wallX = sdl->player->posX + perpWallDist * rayDirX;
 	}
 	wallX -= floor((wallX));
 
 	//x coordinate on the texture
-	int texX = (int)(wallX * (double)sdl->textures[0]->w);
+	int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
 
-	texX = sdl->textures[0]->w - texX - 1;
+	texX = sdl->textures[wall_side]->w - texX - 1;
 
       //draw the pixels of the stripe as a vertical line
       //verLine(x, drawStart, drawEnd, color);
@@ -316,7 +318,7 @@ void	draw_map(t_sdl *sdl)
 	else
 	  for (int i = 0; i <= sdl->pixelation; i++)
 		  //draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, 0xFF0000 - (int)(0xFF0000 / perpWallDist));
-		  draw_vertical_line_from_image(sdl, sdl->textures[0], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+		  draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 	}
 }
 
