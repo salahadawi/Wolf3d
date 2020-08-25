@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 15:32:00 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/25 12:41:23 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,13 @@
 # include <SDL_ttf.h>
 # include <time.h>
 
-#include <stdio.h> //
-
 /*
 ** Textures/visuals
 */
-
-#define TEXTURE_1 "wall.png"
-#define TEXTURE_2 "stone.png"
-#define TEXTURE_3 "alex.png"
-#define TEXTURE_4 "white.png"
-
-#define TEXTURES	TEXTURE_1 " "\
-					TEXTURE_2 " "\
-					TEXTURE_3 " "\
-					TEXTURE_4 " "
-#define TEXTURES_FOLDER "textures/"
-#define LIGHTING_INTENSITY 1
-#define OUT_OF_BOUNDS_COLOR 0x550000
+# define TEXTURES "wall.png stone.png alex.png white.png"
+# define TEXTURES_FOLDER "textures/"
+# define LIGHTING_INTENSITY 1
+# define OUT_OF_BOUNDS_COLOR 0x550000
 
 /*
 ** Player
@@ -51,7 +40,7 @@
 #define CROUCH_AMT 100
 #define CROUCH_MOVE_SPEED_MULT 0.3
 #define MOVE_SPEED 0.1
-#define ROTATION_SPEED 0.05;
+#define ROTATION_SPEED 0.05
 #define SPAWN_POINT -1
 
 #define STEP_DIST_X		1
