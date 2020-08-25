@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 14:06:07 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/21 18:55:15 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,6 @@ void draw_map(t_sdl *sdl)
 		}
 		else
 		{
-			ft_printf("%d\n", sdl->textures_amount);
 			//x coordinate on the texture
 			int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
 
@@ -431,12 +430,39 @@ void	draw_minimap_map(t_sdl *sdl)
 	}
 }
 
+void	draw_minimap_fov_cone(t_sdl *sdl)
+{
+	int		angle;
+	double	rotation_x;
+	double	rotation_y;
+	double	old_rotation_x;
+
+	rotation_x = sdl->player->dirX;
+	rotation_y = sdl->player->dirY;
+	angle = -60;
+	while (angle++ < 0)
+	{
+		old_rotation_x = rotation_x;
+		rotation_x = rotation_x * cos(-0.01) - rotation_y * sin(-0.01);
+		rotation_y = old_rotation_x * sin(-0.01) + rotation_y * cos(-0.01);
+	}
+	while (angle++ < 120)
+	{
+		draw_line(sdl, (int[2]){120, (int)(rotation_x * 40) + 120},
+			(int[2]){120, (int)(rotation_y * 40) + 120}, 0x001500);
+		old_rotation_x = rotation_x;
+		rotation_x = rotation_x * cos(0.01) - rotation_y * sin(0.01);
+		rotation_y = old_rotation_x * sin(0.01) + rotation_y * cos(0.01);
+	}
+}
+
 void	draw_minimap(t_sdl *sdl)
 {
 	draw_box(sdl->screen, (int[4]){25, 25, 220, 220}, 0x333333, &put_pixel);
 	draw_box(sdl->screen, (int[4]){30, 30, 210, 210}, 0x999999,
 		&modify_pixel_remove);
 	draw_minimap_map(sdl);
+	draw_minimap_fov_cone(sdl);
 	draw_box(sdl->screen, (int[4]){115, 115, 10, 10}, 0xFF0000, &put_pixel);
 }
 
@@ -512,7 +538,7 @@ void	handle_player_turning(t_sdl *sdl)
 	{
 		sdl->player->dirX = sdl->player->dirX *
 			cos(-sdl->player->rotation_speed) -
-			sdl->player->dirY * sin(-sdl->player->rotation_speed);
+				sdl->player->dirY * sin(-sdl->player->rotation_speed);
 		sdl->player->dirY = old_dir_x *
 			sin(-sdl->player->rotation_speed) +
 				sdl->player->dirY * cos(-sdl->player->rotation_speed);

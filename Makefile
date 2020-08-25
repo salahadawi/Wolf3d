@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
+#    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/19 16:43:30 by alcohen          ###   ########.fr        #
+#    Updated: 2020/08/21 17:19:18 by sadawi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
-CFILES = main.c handle_map.c player_movement.c modify_pixels.c
+CFILES = main.c handle_map.c player_movement.c modify_pixels.c draw_line.c
 SRCS = $(addprefix srcs/, $(CFILES))
 OBJS = $(addprefix objs/, $(notdir $(SRCS:.c=.o)))
 INCLUDES = -I libft/includes -I includes \
