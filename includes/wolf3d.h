@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/21 17:21:30 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/08/25 19:52:33 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 # include <fcntl.h>
 # include <math.h>
 # include "SDL.h"
-# include <SDL_image.h>
-# include <SDL_ttf.h>
+# include "SDL_image.h"
+//# include "SDL_ttf.h"
 # include <time.h>
 
 #include <stdio.h> //
@@ -110,7 +110,7 @@ typedef struct		s_sdl
 	int				p_spawn_point;
 	t_map			*map;
 	t_player		*player;
-	TTF_Font		*font;
+	//TTF_Font		*font;
 	SDL_Surface		*text_surface;
 	double			time_prev;
 	double			time_now;
