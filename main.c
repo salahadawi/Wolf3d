@@ -534,7 +534,7 @@ void	handle_player_turning(t_sdl *sdl)
 
 	old_dir_x = sdl->player->dirX;
 	old_plane_x = sdl->player->planeX;
-	if (sdl->input.right)
+	if (sdl->input.right && !sdl->input.left)
 	{
 		sdl->player->dirX = sdl->player->dirX *
 			cos(-sdl->player->rotation_speed) -
@@ -549,7 +549,7 @@ void	handle_player_turning(t_sdl *sdl)
 			sin(-sdl->player->rotation_speed) +
 				sdl->player->planeY * cos(-sdl->player->rotation_speed);
 	}
-	if (sdl->input.left)
+	else if (sdl->input.left && !sdl->input.right)
 	{
 		sdl->player->dirX = sdl->player->dirX *
 			cos(sdl->player->rotation_speed) -
