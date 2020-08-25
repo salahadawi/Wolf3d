@@ -22,7 +22,7 @@
 # include <math.h>
 # include "SDL.h"
 # include "SDL_image.h"
-//# include "SDL_ttf.h"
+# include "SDL_ttf.h"
 # include <time.h>
 
 /*
@@ -99,7 +99,7 @@ typedef struct		s_sdl
 	int				p_spawn_point;
 	t_map			*map;
 	t_player		*player;
-	//TTF_Font		*font;
+	TTF_Font		*font;
 	SDL_Surface		*text_surface;
 	double			time_prev;
 	double			time_now;

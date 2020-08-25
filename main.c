@@ -14,8 +14,8 @@
 
 void	close_sdl(t_sdl *sdl)
 {
-	//TTF_CloseFont(sdl->font);
-	//TTF_Quit();
+	TTF_CloseFont(sdl->font);
+	TTF_Quit();
 	SDL_DestroyWindow(sdl->window);
 	sdl->window = NULL;
 	free(sdl);
@@ -54,10 +54,10 @@ t_sdl	*init(void)
 	sdl->screen = SDL_GetWindowSurface(sdl->window);
 	if (!sdl->screen)
 		handle_error_sdl("Surface could not be created!");
-	//if (TTF_Init() == -1)
-	//	handle_error("SDL_ttf could not initialize!");
-	//if (!(sdl->font = TTF_OpenFont("fonts/Action_Man.ttf", 20)))
-	//	handle_error_sdl("Failed to load font!");
+	if (TTF_Init() == -1)
+		handle_error("SDL_ttf could not initialize!");
+	if (!(sdl->font = TTF_OpenFont("fonts/Action_Man.ttf", 20)))
+		handle_error_sdl("Failed to load font!");
 	return (sdl);
 }
 
@@ -373,8 +373,8 @@ void	draw_fps(t_sdl *sdl)
 			free(text);
 		text = ft_sprintf("FPS: %.0f", CLOCKS_PER_SEC /
 			(sdl->time_now - sdl->time_prev));
-		//sdl->text_surface = TTF_RenderText_Shaded(sdl->font, text,
-		//(SDL_Color){255, 255, 255, 0}, (SDL_Color){0, 0, 0, 0});
+		sdl->text_surface = TTF_RenderText_Shaded(sdl->font, text,
+		(SDL_Color){255, 255, 255, 0}, (SDL_Color){0, 0, 0, 0});
 	}
 	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen, NULL);
 	sdl->time_prev = sdl->time_now;
@@ -490,9 +490,9 @@ void	draw_loading_screen(t_sdl *sdl)
 		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH, color);
 		i++;
 	}
-	//if (!sdl->text_surface)
-		//sdl->text_surface = TTF_RenderText_Solid(sdl->font, "Loading...",
-			//(SDL_Color){255, 255, 255, 0});
+	if (!sdl->text_surface)
+		sdl->text_surface = TTF_RenderText_Solid(sdl->font, "Loading...",
+			(SDL_Color){255, 255, 255, 0});
 	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen,
 		&(SDL_Rect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 50, 50});
 	sdl->time_prev = sdl->time_now;
