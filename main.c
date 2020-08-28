@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/25 19:52:48 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/28 15:12:30 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,20 +306,21 @@ void draw_map(t_sdl *sdl)
 		{
 			color = 0xFF0000;
 			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line(sdl, x + i, (int[2]){drawStart, drawEnd}, color);
+				draw_vertical_line(sdl, + x + i, (int[2]){drawStart, drawEnd}, color);
 		}
 		else
 		{
 			//x coordinate on the texture
-			int texX = (int)(wallX * (double)sdl->textures[wall_side]->w);
+			int tex_idx = wall_side + (sdl->map->map[mapY][mapX] - 1) * 4;
+			int texX = (int)(wallX * (double)sdl->textures[tex_idx]->w);
 
-			texX = sdl->textures[wall_side]->w - texX - 1;
+			texX = sdl->textures[tex_idx]->w - texX - 1;
 			//draw the pixels of the stripe as a vertical line
 			//verLine(x, drawStart, drawEnd, color);
 			color = get_pixel(sdl->textures[0], texX, 50);
 			sdl->wall_dist = perpWallDist;
 			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line_from_image(sdl, sdl->textures[wall_side], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+				draw_vertical_line_from_image(sdl, sdl->textures[tex_idx], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
 		}
 	}
 }
@@ -418,7 +419,7 @@ void	draw_minimap_map(t_sdl *sdl)
 		col = 0;
 		while (col < sdl->map->cols)
 		{
-			if (sdl->map->map[row][col] == 1)
+			if (sdl->map->map[row][col] > 0)
 				draw_box(sdl->screen,
 				(int[4]){(col - sdl->player->posX) * 210 / blocks_visible + 120,
 				(row - sdl->player->posY) * 210 / blocks_visible + 120,
@@ -710,5 +711,6 @@ int		main(int argc, char **argv)
 		}
 		handle_player_movement(sdl);
 	}
+
 	close_sdl(sdl);
 }

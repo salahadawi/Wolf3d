@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/25 19:55:06 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/08/28 15:11:23 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 /*
 ** Textures/visuals
 */
-# define TEXTURES "wall.png stone.png alex.png white.png"
+# define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png grass.png grass.png grass.png grass.png grass.png grass.png grass.png"
 # define TEXTURES_FOLDER "textures/"
 # define LIGHTING_INTENSITY 1
 # define OUT_OF_BOUNDS_COLOR 0x550000
