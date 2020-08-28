@@ -42,7 +42,8 @@
 #define MOVE_SPEED 0.1
 #define ROTATION_SPEED 0.05
 #define SPAWN_POINT -1
-
+# define VERTICAL_FOV_DIV	2.0
+# define FOV_CHANGE_AMT 0.05
 #define STEP_DIST_X		1
 #define STEP_DIST_Y		1
 
@@ -77,6 +78,7 @@ typedef struct		s_player
 	int				cam_height;
 	int				crouching;
 	int				busy;
+	double			vertical_fov;
 }					t_player;
 
 typedef struct		s_input

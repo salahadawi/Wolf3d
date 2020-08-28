@@ -102,6 +102,7 @@ t_player	*init_player(t_map *map)
 	player->planeY = 0.66;
 	player->move_speed = MOVE_SPEED;
 	player->rotation_speed = ROTATION_SPEED;
+	player->vertical_fov = VERTICAL_FOV_DIV;
 	return (player);
 }
 
@@ -273,9 +274,9 @@ void draw_map(t_sdl *sdl)
 		int lineHeight = (int)(SCREEN_HEIGHT / perpWallDist);
 
 		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+		int drawStart = -lineHeight / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
 		//if(drawStart < 0)drawStart = 0;
-		int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+		int drawEnd = lineHeight / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
 		if (drawEnd >= SCREEN_HEIGHT)
 			drawEnd = SCREEN_HEIGHT - 1;
 
@@ -652,6 +653,10 @@ void	handle_keys_down(t_sdl *sdl)
 		sdl->pixelation ? sdl->pixelation-- : (void)sdl->pixelation;
 	if (sdl->e.key.keysym.sym == SDLK_LCTRL)
 		sdl->input.crouch = 1;
+	if (sdl->e.key.keysym.sym == SDLK_x && sdl->player->vertical_fov <= 4.0)
+		sdl->player->vertical_fov += FOV_CHANGE_AMT;
+	if (sdl->e.key.keysym.sym == SDLK_c && sdl->player->vertical_fov >= 1.0)
+		sdl->player->vertical_fov -= FOV_CHANGE_AMT;
 }
 
 void	handle_keys_up(t_sdl *sdl)
