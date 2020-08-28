@@ -66,7 +66,8 @@ void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist)
 	if (x > SCREEN_WIDTH - 1 || y > SCREEN_HEIGHT - 1 || x < 0 || y < 0)
 		return ;
 	intensity = (1.0 / (wall_dist)) * LIGHTING_INTENSITY;
-	modify_pixel_multiply(screen, x, y, intensity);
+	if (intensity <= 1.0)
+		modify_pixel_multiply(screen, x, y, intensity);
 }
 
 void	modify_pixel_multiply(SDL_Surface *screen, int x, int y, double amount)
