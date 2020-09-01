@@ -507,7 +507,7 @@ void	open_textures(t_sdl *sdl)
 	char	**textures;
 	char	*texture_path;
 
-	textures = ft_strsplit(TEXTURES, ' ');
+	textures = ft_strsplit(TEXTURES, ' '); //TODO: Count textures and error if smaller than largest in map x 4
 	textures_amount = 0;
 	while (textures[textures_amount])
 		textures_amount++;

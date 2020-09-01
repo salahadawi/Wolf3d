@@ -35,9 +35,10 @@ void	malloc_extra_row(t_map *s_map)
 
 void	store_map_line(char *line, t_map *s_map)
 {
-	int i;
-	int col;
-	int count;
+	int	i;
+	int	col;
+	int	count;
+	int	number;
 
 	i = 0;
 	col = 0;
@@ -50,7 +51,8 @@ void	store_map_line(char *line, t_map *s_map)
 		while (line[i] == ' ')
 			i++;
 		if (line[i])
-			s_map->map[s_map->rows][col++] = ft_atoi(&line[i]);
+			number = ft_atoi(&line[i]);
+		s_map->map[s_map->rows][col++] = number;
 		while (line[i] != ' ' && line[i])
 			i++;
 	}

@@ -27,7 +27,12 @@
 
 /*
 ** Textures/visuals
+** TEXTURES has 4 textures for each block.
+** The textures are determined by the block's number on the map.
+** MAX_MAP_NUMBER should be the amount of textures divided by 4
 */
+
+# define MAX_MAP_NUMBER 4
 # define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png grass.png grass.png grass.png grass.png grass.png grass.png grass.png"
 # define TEXTURES_FOLDER "textures/"
 # define LIGHTING_INTENSITY 1
