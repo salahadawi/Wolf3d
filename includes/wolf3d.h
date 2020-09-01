@@ -70,8 +70,8 @@ typedef struct		s_map
 
 typedef struct		s_player
 {
-	double			posX;
-	double			posY;
+	double			x;
+	double			y;
 	double			dirX;
 	double			dirY;
 	double			planeX;

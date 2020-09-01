@@ -93,9 +93,9 @@ t_player	*init_player(t_map *map)
 	if (!(player = (t_player*)ft_memalloc(sizeof(*player))))
 		handle_error("Malloc failed");
 	set_spawn_point(player, map);
-	player->posX = player->spawn_x + 0.5;
-	player->posY = player->spawn_y + 0.5;
-	ft_printf("Player spawned at %f %f\n", player->posX, player->posY);
+	player->x = player->spawn_x + 0.5;
+	player->y = player->spawn_y + 0.5;
+	ft_printf("Player spawned at %f %f\n", player->x, player->y);
 	player->dirX = 1;
 	player->dirY = 0.000001;
 	player->planeX = 0;
@@ -197,108 +197,107 @@ void draw_map(t_sdl *sdl)
 	{
 		//calculate ray position and direction
 		double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
-		double rayDirX = sdl->player->dirX + sdl->player->planeX * cameraX;
-		double rayDirY = sdl->player->dirY + sdl->player->planeY * cameraX;
+		double ray_dir_x = sdl->player->dirX + sdl->player->planeX * cameraX;
+		double ray_dir_y = sdl->player->dirY + sdl->player->planeY * cameraX;
 		//which box of the map we're in
-		int mapX = (int)sdl->player->posX;
-		int mapY = (int)sdl->player->posY;
+		int map_x = (int)sdl->player->x;
+		int map_y = (int)sdl->player->y;
 
 		//length of ray from current position to next x or y-side
-		double sideDistX;
-		double sideDistY;
+		double side_dist_x;
+		double side_dist_y;
 
 		//length of ray from one x or y-side to next x or y-side
-		double deltaDistX = fabs(1 / rayDirX);
-		double deltaDistY = fabs(1 / rayDirY);
-		double perpWallDist;
+		double delta_dist_x = fabs(1 / ray_dir_x);
+		double delta_dist_y = fabs(1 / ray_dir_y);
+		double perpendicular_wall_dist;
 
 		//what direction to step in x or y-direction (either +1 or -1)
-		int stepX;
-		int stepY;
+		int step_x;
+		int step_y;
 
 		int hit = 0; //was there a wall hit?
 		int side;	 //was a NS or a EW wall hit?
 		//calculate step and initial sideDist
-		if (rayDirX < 0)
+		if (ray_dir_x < 0)
 		{
-			stepX = -STEP_DIST_X;
-			sideDistX = (sdl->player->posX - mapX) * deltaDistX;
+			step_x = -STEP_DIST_X;
+			side_dist_x = (sdl->player->x - map_x) * delta_dist_x;
 		}
 		else
 		{
-			stepX = STEP_DIST_X;
-			sideDistX = (mapX + 1.0 - sdl->player->posX) * deltaDistX;
+			step_x = STEP_DIST_X;
+			side_dist_x = (map_x + 1.0 - sdl->player->x) * delta_dist_x;
 		}
-		if (rayDirY < 0)
+		if (ray_dir_y < 0)
 		{
-			stepY = -STEP_DIST_Y;
-			sideDistY = (sdl->player->posY - mapY) * deltaDistY;
+			step_y = -STEP_DIST_Y;
+			side_dist_y = (sdl->player->y - map_y) * delta_dist_y;
 		}
 		else
 		{
-			stepY = STEP_DIST_Y;
-			sideDistY = (mapY + 1.0 - sdl->player->posY) * deltaDistY;
+			step_y = STEP_DIST_Y;
+			side_dist_y = (map_y + 1.0 - sdl->player->y) * delta_dist_y;
 		}
 		//perform DDA
 
 		while (hit == 0)
 		{
 			//jump to next map square, OR in x-direction, OR in y-direction
-			if (sideDistX < sideDistY)
+			if (side_dist_x < side_dist_y)
 			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
+				side_dist_x += delta_dist_x;
+				map_x += step_x;
 				side = 0;
 			}
 			else
 			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
+				side_dist_y += delta_dist_y;
+				map_y += step_y;
 				side = 1;
 			}
 			//Check if ray is out of bounds, if yes then exit loop
-			if (mapY >= sdl->map->rows || mapX >= sdl->map->cols ||
-				mapY < 0 || mapX < 0)
+			if (map_y >= sdl->map->rows || map_x >= sdl->map->cols ||
+				map_y < 0 || map_x < 0)
 				break;
 			//Check if ray has hit a wall
-			if (sdl->map->map[mapY][mapX] > 0)
+			if (sdl->map->map[map_y][map_x] > 0)
 				hit = 1;
 		}
 		//Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
 		if (side == 0)
-			perpWallDist = (mapX - sdl->player->posX + (1 - stepX) / 2) / rayDirX;
+			perpendicular_wall_dist = (map_x - sdl->player->x + (1 - step_x) / 2) / ray_dir_x;
 		else
-			perpWallDist = (mapY - sdl->player->posY + (1 - stepY) / 2) / rayDirY;
+			perpendicular_wall_dist = (map_y - sdl->player->y + (1 - step_y) / 2) / ray_dir_y;
 
 		//Calculate height of line to draw on screen
-		int lineHeight = (int)(SCREEN_HEIGHT / perpWallDist);
+		int line_height = (int)(SCREEN_HEIGHT / perpendicular_wall_dist);
 
 		//calculate lowest and highest pixel to fill in current stripe
-		int drawStart = -lineHeight / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
-		//if(drawStart < 0)drawStart = 0;
-		int drawEnd = lineHeight / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
-		if (drawEnd >= SCREEN_HEIGHT)
-			drawEnd = SCREEN_HEIGHT - 1;
+		int draw_start = -line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
+		int draw_end = line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
+		if (draw_end >= SCREEN_HEIGHT)
+			draw_end = SCREEN_HEIGHT - 1;
 
 		//choose wall color
 		int color;
 		//give x and y sides different brightness
-		double wallX; //where exactly the wall was hit
+		double wall_x; //where exactly the wall was hit
 		if (side == 0)
 		{
 			wall_side = 0;
-			if (mapX - sdl->player->posX > 0)
+			if (map_x - sdl->player->x > 0)
 				wall_side = 1;
-			wallX = sdl->player->posY + perpWallDist * rayDirY;
+			wall_x = sdl->player->y + perpendicular_wall_dist * ray_dir_y;
 		}
 		if (side == 1)
 		{
 			wall_side = 2;
-			if (mapY - sdl->player->posY > 0)
+			if (map_y - sdl->player->y > 0)
 				wall_side = 3;
-			wallX = sdl->player->posX + perpWallDist * rayDirX;
+			wall_x = sdl->player->x + perpendicular_wall_dist * ray_dir_x;
 		}
-		wallX -= floor((wallX));
+		wall_x -= floor((wall_x));
 
 		if (wall_side >= sdl->textures_amount)
 			hit = 0;
@@ -306,21 +305,20 @@ void draw_map(t_sdl *sdl)
 		{
 			color = 0xFF0000;
 			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line(sdl, + x + i, (int[2]){drawStart, drawEnd}, color);
+				draw_vertical_line(sdl, + x + i, (int[2]){draw_start, draw_end}, color);
 		}
 		else
 		{
 			//x coordinate on the texture
-			int tex_idx = wall_side + (sdl->map->map[mapY][mapX] - 1) * 4;
-			int texX = (int)(wallX * (double)sdl->textures[tex_idx]->w);
+			int tex_idx = wall_side + (sdl->map->map[map_y][map_x] - 1) * 4;
+			int texture_x = (int)(wall_x * (double)sdl->textures[tex_idx]->w);
 
-			texX = sdl->textures[tex_idx]->w - texX - 1;
+			texture_x = sdl->textures[tex_idx]->w - texture_x - 1;
 			//draw the pixels of the stripe as a vertical line
-			//verLine(x, drawStart, drawEnd, color);
-			color = get_pixel(sdl->textures[0], texX, 50);
-			sdl->wall_dist = perpWallDist;
+			color = get_pixel(sdl->textures[0], texture_x, 50);
+			sdl->wall_dist = perpendicular_wall_dist;
 			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line_from_image(sdl, sdl->textures[tex_idx], (int[2]){x + i, texX}, (int[2]){drawStart, drawEnd});
+				draw_vertical_line_from_image(sdl, sdl->textures[tex_idx], (int[2]){x + i, texture_x}, (int[2]){draw_start, draw_end});
 		}
 	}
 }
@@ -421,8 +419,8 @@ void	draw_minimap_map(t_sdl *sdl)
 		{
 			if (sdl->map->map[row][col] > 0)
 				draw_box(sdl->screen,
-				(int[4]){(col - sdl->player->posX) * 210 / blocks_visible + 120,
-				(row - sdl->player->posY) * 210 / blocks_visible + 120,
+				(int[4]){(col - sdl->player->x) * 210 / blocks_visible + 120,
+				(row - sdl->player->y) * 210 / blocks_visible + 120,
 				210 / blocks_visible,
 				210 / blocks_visible},
 				0x888888, &put_minimap_pixel);
@@ -572,50 +570,50 @@ void	handle_player_walking(t_sdl *sdl)
 {
 	if (sdl->input.up)
 	{
-		if (sdl->player->posY + sdl->player->dirY *
+		if (sdl->player->y + sdl->player->dirY *
 			sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) <
-				sdl->map->rows && sdl->player->posY +
+				sdl->map->rows && sdl->player->y +
 					sdl->player->dirY * sdl->player->move_speed +
 						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY +
+			if (sdl->map->map[(int)(sdl->player->y +
 				sdl->player->dirY * sdl->player->move_speed +
 					(sdl->player->dirY >
-						0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-				sdl->player->posY += sdl->player->dirY *
+						0 ? 0.3 : -0.3))][(int)(sdl->player->x)] < 1)
+				sdl->player->y += sdl->player->dirY *
 					sdl->player->move_speed;
-		if (sdl->player->posX + sdl->player->dirX *
+		if (sdl->player->x + sdl->player->dirX *
 			sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) <
-				sdl->map->cols && sdl->player->posX + sdl->player->dirX *
+				sdl->map->cols && sdl->player->x + sdl->player->dirX *
 					sdl->player->move_speed + (sdl->player->dirX >
 						0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX
+			if (sdl->map->map[(int)(sdl->player->y)][(int)(sdl->player->x
 				+ sdl->player->dirX * sdl->player->move_speed +
 					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->posX += sdl->player->dirX *
+				sdl->player->x += sdl->player->dirX *
 					sdl->player->move_speed;
 	}
 	if (sdl->input.down)
 	{
-		if (sdl->player->posY - sdl->player->dirY *
+		if (sdl->player->y - sdl->player->dirY *
 			sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) <
-				sdl->map->rows && sdl->player->posY -
+				sdl->map->rows && sdl->player->y -
 					sdl->player->dirY * sdl->player->move_speed -
 						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY -
+			if (sdl->map->map[(int)(sdl->player->y -
 				sdl->player->dirY * sdl->player->move_speed -
 					(sdl->player->dirY >
-						0 ? 0.3 : -0.3))][(int)(sdl->player->posX)] < 1)
-				sdl->player->posY -= sdl->player->dirY *
+						0 ? 0.3 : -0.3))][(int)(sdl->player->x)] < 1)
+				sdl->player->y -= sdl->player->dirY *
 					sdl->player->move_speed;
-		if (sdl->player->posX - sdl->player->dirX *
+		if (sdl->player->x - sdl->player->dirX *
 			sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) <
-				sdl->map->cols && sdl->player->posX -
+				sdl->map->cols && sdl->player->x -
 					sdl->player->dirX * sdl->player->move_speed -
 						(sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
-			if (sdl->map->map[(int)(sdl->player->posY)][(int)(sdl->player->posX
+			if (sdl->map->map[(int)(sdl->player->y)][(int)(sdl->player->x
 				- sdl->player->dirX * sdl->player->move_speed -
 					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->posX -= sdl->player->dirX *
+				sdl->player->x -= sdl->player->dirX *
 					sdl->player->move_speed;
 	}
 }
