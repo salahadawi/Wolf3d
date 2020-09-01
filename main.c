@@ -96,10 +96,10 @@ t_player	*init_player(t_map *map)
 	player->x = player->spawn_x + 0.5;
 	player->y = player->spawn_y + 0.5;
 	ft_printf("Player spawned at %f %f\n", player->x, player->y);
-	player->dirX = 1;
-	player->dirY = 0.000001;
-	player->planeX = 0;
-	player->planeY = 0.66;
+	player->dir_x = 1;
+	player->dir_y = 0.000001;
+	player->plane_x = 0;
+	player->plane_y = 0.66;
 	player->move_speed = MOVE_SPEED;
 	player->rotation_speed = ROTATION_SPEED;
 	player->vertical_fov = VERTICAL_FOV_DIV;
@@ -193,31 +193,48 @@ void draw_vertical_line(t_sdl *sdl, int x, int y[2], int color)
 void draw_map(t_sdl *sdl)
 {
 	int wall_side;
+	int texture_x;
+	int map_x;
+	int map_y;
+	double camera_x;
+	double ray_dir_x;
+	double ray_dir_y;
+	double side_dist_x;
+	double side_dist_y;
+	double delta_dist_x;
+	double delta_dist_y;
+	double perpendicular_wall_dist;
+	int step_x;
+	int step_y;
+	int hit; //was there a wall hit?
+	int side;	 //was a NS or a EW wall hit?
+	int line_height;
+	int draw_start;
+	int draw_end;
+	double wall_x;
+	int	tex_idx;
+
 	for (int x = 0; x < SCREEN_WIDTH; x += sdl->pixelation + 1)
 	{
 		//calculate ray position and direction
-		double cameraX = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
-		double ray_dir_x = sdl->player->dirX + sdl->player->planeX * cameraX;
-		double ray_dir_y = sdl->player->dirY + sdl->player->planeY * cameraX;
+		camera_x = 2 * x / (double)SCREEN_WIDTH - 1; //x-coordinate in camera space
+		ray_dir_x = sdl->player->dir_x + sdl->player->plane_x * camera_x;
+		ray_dir_y = sdl->player->dir_y + sdl->player->plane_y * camera_x;
 		//which box of the map we're in
-		int map_x = (int)sdl->player->x;
-		int map_y = (int)sdl->player->y;
+		map_x = (int)sdl->player->x;
+		map_y = (int)sdl->player->y;
 
 		//length of ray from current position to next x or y-side
-		double side_dist_x;
-		double side_dist_y;
+
 
 		//length of ray from one x or y-side to next x or y-side
-		double delta_dist_x = fabs(1 / ray_dir_x);
-		double delta_dist_y = fabs(1 / ray_dir_y);
-		double perpendicular_wall_dist;
+		delta_dist_x = fabs(1 / ray_dir_x);
+		delta_dist_y = fabs(1 / ray_dir_y);
 
 		//what direction to step in x or y-direction (either +1 or -1)
-		int step_x;
-		int step_y;
 
-		int hit = 0; //was there a wall hit?
-		int side;	 //was a NS or a EW wall hit?
+		hit = 0;
+
 		//calculate step and initial sideDist
 		if (ray_dir_x < 0)
 		{
@@ -271,18 +288,13 @@ void draw_map(t_sdl *sdl)
 			perpendicular_wall_dist = (map_y - sdl->player->y + (1 - step_y) / 2) / ray_dir_y;
 
 		//Calculate height of line to draw on screen
-		int line_height = (int)(SCREEN_HEIGHT / perpendicular_wall_dist);
+		line_height = (int)(SCREEN_HEIGHT / perpendicular_wall_dist);
 
 		//calculate lowest and highest pixel to fill in current stripe
-		int draw_start = -line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
-		int draw_end = line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
+		draw_start = -line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
+		draw_end = line_height / sdl->player->vertical_fov + SCREEN_HEIGHT / 2;
 		if (draw_end >= SCREEN_HEIGHT)
 			draw_end = SCREEN_HEIGHT - 1;
-
-		//choose wall color
-		int color;
-		//give x and y sides different brightness
-		double wall_x; //where exactly the wall was hit
 		if (side == 0)
 		{
 			wall_side = 0;
@@ -303,19 +315,16 @@ void draw_map(t_sdl *sdl)
 			hit = 0;
 		if (!hit)
 		{
-			color = 0xFF0000;
 			for (int i = 0; i <= sdl->pixelation; i++)
-				draw_vertical_line(sdl, + x + i, (int[2]){draw_start, draw_end}, color);
+				draw_vertical_line(sdl, + x + i, (int[2]){draw_start, draw_end}, OUT_OF_BOUNDS_COLOR);
 		}
 		else
 		{
 			//x coordinate on the texture
-			int tex_idx = wall_side + (sdl->map->map[map_y][map_x] - 1) * 4;
-			int texture_x = (int)(wall_x * (double)sdl->textures[tex_idx]->w);
-
+			tex_idx = wall_side + (sdl->map->map[map_y][map_x] - 1) * 4;
+			texture_x = (int)(wall_x * (double)sdl->textures[tex_idx]->w);
 			texture_x = sdl->textures[tex_idx]->w - texture_x - 1;
 			//draw the pixels of the stripe as a vertical line
-			color = get_pixel(sdl->textures[0], texture_x, 50);
 			sdl->wall_dist = perpendicular_wall_dist;
 			for (int i = 0; i <= sdl->pixelation; i++)
 				draw_vertical_line_from_image(sdl, sdl->textures[tex_idx], (int[2]){x + i, texture_x}, (int[2]){draw_start, draw_end});
@@ -437,8 +446,8 @@ void	draw_minimap_fov_cone(t_sdl *sdl)
 	double	rotation_y;
 	double	old_rotation_x;
 
-	rotation_x = sdl->player->dirX;
-	rotation_y = sdl->player->dirY;
+	rotation_x = sdl->player->dir_x;
+	rotation_y = sdl->player->dir_y;
 	angle = -60;
 	while (angle++ < 0)
 	{
@@ -532,37 +541,37 @@ void	handle_player_turning(t_sdl *sdl)
 	double old_dir_x;
 	double old_plane_x;
 
-	old_dir_x = sdl->player->dirX;
-	old_plane_x = sdl->player->planeX;
+	old_dir_x = sdl->player->dir_x;
+	old_plane_x = sdl->player->plane_x;
 	if (sdl->input.right && !sdl->input.left)
 	{
-		sdl->player->dirX = sdl->player->dirX *
+		sdl->player->dir_x = sdl->player->dir_x *
 			cos(-sdl->player->rotation_speed) -
-				sdl->player->dirY * sin(-sdl->player->rotation_speed);
-		sdl->player->dirY = old_dir_x *
+				sdl->player->dir_y * sin(-sdl->player->rotation_speed);
+		sdl->player->dir_y = old_dir_x *
 			sin(-sdl->player->rotation_speed) +
-				sdl->player->dirY * cos(-sdl->player->rotation_speed);
-		sdl->player->planeX = sdl->player->planeX *
+				sdl->player->dir_y * cos(-sdl->player->rotation_speed);
+		sdl->player->plane_x = sdl->player->plane_x *
 			cos(-sdl->player->rotation_speed) -
-				sdl->player->planeY * sin(-sdl->player->rotation_speed);
-		sdl->player->planeY = old_plane_x *
+				sdl->player->plane_y * sin(-sdl->player->rotation_speed);
+		sdl->player->plane_y = old_plane_x *
 			sin(-sdl->player->rotation_speed) +
-				sdl->player->planeY * cos(-sdl->player->rotation_speed);
+				sdl->player->plane_y * cos(-sdl->player->rotation_speed);
 	}
 	else if (sdl->input.left && !sdl->input.right)
 	{
-		sdl->player->dirX = sdl->player->dirX *
+		sdl->player->dir_x = sdl->player->dir_x *
 			cos(sdl->player->rotation_speed) -
-				sdl->player->dirY * sin(sdl->player->rotation_speed);
-		sdl->player->dirY = old_dir_x *
+				sdl->player->dir_y * sin(sdl->player->rotation_speed);
+		sdl->player->dir_y = old_dir_x *
 			sin(sdl->player->rotation_speed) +
-				sdl->player->dirY * cos(sdl->player->rotation_speed);
-		sdl->player->planeX = sdl->player->planeX *
+				sdl->player->dir_y * cos(sdl->player->rotation_speed);
+		sdl->player->plane_x = sdl->player->plane_x *
 			cos(sdl->player->rotation_speed) -
-				sdl->player->planeY * sin(sdl->player->rotation_speed);
-		sdl->player->planeY = old_plane_x *
+				sdl->player->plane_y * sin(sdl->player->rotation_speed);
+		sdl->player->plane_y = old_plane_x *
 			sin(sdl->player->rotation_speed) +
-				sdl->player->planeY * cos(sdl->player->rotation_speed);
+				sdl->player->plane_y * cos(sdl->player->rotation_speed);
 	}
 }
 
@@ -570,50 +579,50 @@ void	handle_player_walking(t_sdl *sdl)
 {
 	if (sdl->input.up)
 	{
-		if (sdl->player->y + sdl->player->dirY *
-			sdl->player->move_speed + (sdl->player->dirY > 0 ? 0.3 : -0.3) <
+		if (sdl->player->y + sdl->player->dir_y *
+			sdl->player->move_speed + (sdl->player->dir_y > 0 ? 0.3 : -0.3) <
 				sdl->map->rows && sdl->player->y +
-					sdl->player->dirY * sdl->player->move_speed +
-						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+					sdl->player->dir_y * sdl->player->move_speed +
+						(sdl->player->dir_y > 0 ? 0.3 : -0.3) > 0)
 			if (sdl->map->map[(int)(sdl->player->y +
-				sdl->player->dirY * sdl->player->move_speed +
-					(sdl->player->dirY >
+				sdl->player->dir_y * sdl->player->move_speed +
+					(sdl->player->dir_y >
 						0 ? 0.3 : -0.3))][(int)(sdl->player->x)] < 1)
-				sdl->player->y += sdl->player->dirY *
+				sdl->player->y += sdl->player->dir_y *
 					sdl->player->move_speed;
-		if (sdl->player->x + sdl->player->dirX *
-			sdl->player->move_speed + (sdl->player->dirX > 0 ? 0.3 : -0.3) <
-				sdl->map->cols && sdl->player->x + sdl->player->dirX *
-					sdl->player->move_speed + (sdl->player->dirX >
+		if (sdl->player->x + sdl->player->dir_x *
+			sdl->player->move_speed + (sdl->player->dir_x > 0 ? 0.3 : -0.3) <
+				sdl->map->cols && sdl->player->x + sdl->player->dir_x *
+					sdl->player->move_speed + (sdl->player->dir_x >
 						0 ? 0.3 : -0.3) > 0)
 			if (sdl->map->map[(int)(sdl->player->y)][(int)(sdl->player->x
-				+ sdl->player->dirX * sdl->player->move_speed +
-					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->x += sdl->player->dirX *
+				+ sdl->player->dir_x * sdl->player->move_speed +
+					(sdl->player->dir_x > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->x += sdl->player->dir_x *
 					sdl->player->move_speed;
 	}
 	if (sdl->input.down)
 	{
-		if (sdl->player->y - sdl->player->dirY *
-			sdl->player->move_speed - (sdl->player->dirY > 0 ? 0.3 : -0.3) <
+		if (sdl->player->y - sdl->player->dir_y *
+			sdl->player->move_speed - (sdl->player->dir_y > 0 ? 0.3 : -0.3) <
 				sdl->map->rows && sdl->player->y -
-					sdl->player->dirY * sdl->player->move_speed -
-						(sdl->player->dirY > 0 ? 0.3 : -0.3) > 0)
+					sdl->player->dir_y * sdl->player->move_speed -
+						(sdl->player->dir_y > 0 ? 0.3 : -0.3) > 0)
 			if (sdl->map->map[(int)(sdl->player->y -
-				sdl->player->dirY * sdl->player->move_speed -
-					(sdl->player->dirY >
+				sdl->player->dir_y * sdl->player->move_speed -
+					(sdl->player->dir_y >
 						0 ? 0.3 : -0.3))][(int)(sdl->player->x)] < 1)
-				sdl->player->y -= sdl->player->dirY *
+				sdl->player->y -= sdl->player->dir_y *
 					sdl->player->move_speed;
-		if (sdl->player->x - sdl->player->dirX *
-			sdl->player->move_speed - (sdl->player->dirX > 0 ? 0.3 : -0.3) <
+		if (sdl->player->x - sdl->player->dir_x *
+			sdl->player->move_speed - (sdl->player->dir_x > 0 ? 0.3 : -0.3) <
 				sdl->map->cols && sdl->player->x -
-					sdl->player->dirX * sdl->player->move_speed -
-						(sdl->player->dirX > 0 ? 0.3 : -0.3) > 0)
+					sdl->player->dir_x * sdl->player->move_speed -
+						(sdl->player->dir_x > 0 ? 0.3 : -0.3) > 0)
 			if (sdl->map->map[(int)(sdl->player->y)][(int)(sdl->player->x
-				- sdl->player->dirX * sdl->player->move_speed -
-					(sdl->player->dirX > 0 ? 0.3 : -0.3))] < 1)
-				sdl->player->x -= sdl->player->dirX *
+				- sdl->player->dir_x * sdl->player->move_speed -
+					(sdl->player->dir_x > 0 ? 0.3 : -0.3))] < 1)
+				sdl->player->x -= sdl->player->dir_x *
 					sdl->player->move_speed;
 	}
 }

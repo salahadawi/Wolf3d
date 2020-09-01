@@ -72,10 +72,10 @@ typedef struct		s_player
 {
 	double			x;
 	double			y;
-	double			dirX;
-	double			dirY;
-	double			planeX;
-	double			planeY;
+	double			dir_x;
+	double			dir_y;
+	double			plane_x;
+	double			plane_y;
 	double			spawn_x;
 	double			spawn_y;
 	double			move_speed;
