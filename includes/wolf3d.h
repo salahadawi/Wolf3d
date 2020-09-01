@@ -136,4 +136,12 @@ void	put_pixel(SDL_Surface *screen, int x, int y, int color);
 
 void	draw_line(t_sdl *sdl, int x[2], int y[2], int color);
 
+void	check_count(int count, t_map *s_map);
+
+int		count_ints(char *line, t_map *s_map);
+
+void	check_line(char *line);
+
+int		bigger_than_int(char *line);
+
 #endif

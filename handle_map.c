@@ -33,69 +33,6 @@ void	malloc_extra_row(t_map *s_map)
 	free(tmp);
 }
 
-void	check_line(char *line)
-{
-	int i;
-
-	i = 0;
-	while (line[i])
-	{
-		if (!ft_isdigit(line[i]) && line[i] != ' ' && !ft_isdigit_neg(&line[i]))
-			handle_error("Map contains non-digit symbol");
-		i++;
-	}
-}
-
-int		bigger_than_int(char *line)
-{
-	int i;
-
-	i = 0;
-	while (ft_isdigit(line[i]))
-		i++;
-	if (i == 10)
-	{
-		if (ft_atoilong(&line[0]) > 2147483647)
-			return (1);
-	}
-	return (!(i < 11));
-}
-
-void	check_count(int count, t_map *s_map)
-{
-	if (!count)
-		handle_error("Invalid row in file");
-	if (s_map->cols)
-		if (count != s_map->cols)
-			handle_error("Rows differ in length");
-}
-
-int		count_ints(char *line, t_map *s_map)
-{
-	int i;
-	int count;
-
-	i = 0;
-	count = 0;
-	while (line[i])
-	{
-		while (line[i] == ' ' && line[i])
-			i++;
-		if (ft_isdigit(line[i]) || ft_isdigit_neg(&line[i]))
-		{
-			if (line[i] == '-')
-				i++;
-			if (bigger_than_int(&line[i]))
-				handle_error("Map contains number bigger than MAX_INT");
-			while (ft_isdigit(line[i]))
-				i++;
-			count++;
-		}
-	}
-	check_count(count, s_map);
-	return (count);
-}
-
 void	store_map_line(char *line, t_map *s_map)
 {
 	int i;
@@ -157,20 +94,4 @@ void	handle_arguments(t_sdl *sdl, int argc, char **argv)
 	if (argc > 2)
 		handle_error("Too many arguments!");
 	sdl->map = store_map(argv[1]);
-}
-
-void	print_map(t_map *s_map)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (i < s_map->rows)
-	{
-		j = 0;
-		while (j < s_map->cols)
-			ft_printf("%3d ", s_map->map[i][j++]);
-		ft_printf("\n");
-		i++;
-	}
 }

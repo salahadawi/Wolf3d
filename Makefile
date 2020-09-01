@@ -6,12 +6,12 @@
 #    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/08/25 20:23:35 by alcohen          ###   ########.fr        #
+#    Updated: 2020/09/01 12:08:26 by alcohen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
-SRCS = main.c handle_map.c player_movement.c modify_pixels.c draw_line.c
+SRCS = main.c handle_map.c player_movement.c modify_pixels.c draw_line.c map_helpers.c
 INCLUDES_LINUX = `sdl2-config --cflags --libs` -I libft/includes -I includes
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
