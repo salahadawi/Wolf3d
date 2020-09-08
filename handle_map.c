@@ -52,6 +52,8 @@ void	store_map_line(char *line, t_map *s_map)
 			i++;
 		if (line[i])
 			number = ft_atoi(&line[i]);
+		if (number > s_map->max_num)
+			s_map->max_num = number;
 		s_map->map[s_map->rows][col++] = number;
 		while (line[i] != ' ' && line[i])
 			i++;

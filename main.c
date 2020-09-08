@@ -518,6 +518,8 @@ void	open_textures(t_sdl *sdl)
 	textures_amount = 0;
 	while (textures[textures_amount])
 		textures_amount++;
+	if ((textures_amount / 4) < sdl->map->max_num)
+		handle_error("Invalid texture number in map");
 	sdl->textures_amount = textures_amount ? textures_amount : -1;
 	if (!(sdl->textures = (SDL_Surface**)ft_memalloc(sizeof(SDL_Surface*)
 		* textures_amount)))

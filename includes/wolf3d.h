@@ -29,11 +29,11 @@
 ** Textures/visuals
 ** TEXTURES has 4 textures for each block.
 ** The textures are determined by the block's number on the map.
-** MAX_MAP_NUMBER must be the amount of textures divided by 4
+** Each block must have 4 textures defined.
+** For example a map block '5' means TEXTURES must have 20 textures
 */
 
-# define MAX_MAP_NUMBER 4
-# define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png grass.png grass.png grass.png grass.png grass.png grass.png grass.png"
+# define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png"
 
 # define TEXTURES_FOLDER "textures/"
 # define LIGHTING_INTENSITY 1
@@ -67,6 +67,7 @@ typedef struct			s_map
 	int					**map;
 	int					rows;
 	int					cols;
+	int					max_num;
 }						t_map;
 
 typedef struct			s_player
