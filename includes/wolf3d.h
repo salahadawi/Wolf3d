@@ -6,7 +6,7 @@
 /*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/28 15:11:23 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/09/08 15:41:29 by alcohen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@
 ** Textures/visuals
 ** TEXTURES has 4 textures for each block.
 ** The textures are determined by the block's number on the map.
-** MAX_MAP_NUMBER should be the amount of textures divided by 4
+** MAX_MAP_NUMBER must be the amount of textures divided by 4
 */
 
 # define MAX_MAP_NUMBER 4
 # define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png grass.png grass.png grass.png grass.png grass.png grass.png grass.png"
+
 # define TEXTURES_FOLDER "textures/"
 # define LIGHTING_INTENSITY 1
 # define OUT_OF_BOUNDS_COLOR 0x550000
@@ -42,15 +43,15 @@
 ** Player
 */
 
-#define CROUCH_AMT 100
-#define CROUCH_MOVE_SPEED_MULT 0.3
-#define MOVE_SPEED 0.1
-#define ROTATION_SPEED 0.05
-#define SPAWN_POINT -1
+# define CROUCH_AMT 100
+# define CROUCH_MOVE_SPEED_MULT 0.3
+# define MOVE_SPEED 0.1
+# define ROTATION_SPEED 0.05
+# define SPAWN_POINT -1
 # define VERTICAL_FOV_DIV	2.0
 # define FOV_CHANGE_AMT 0.05
-#define STEP_DIST_X		1
-#define STEP_DIST_Y		1
+# define STEP_DIST_X		1
+# define STEP_DIST_Y		1
 
 typedef	struct			s_texture
 {
@@ -60,93 +61,84 @@ typedef	struct			s_texture
 	struct s_texture	*next;
 }						t_texture;
 
-typedef struct		s_map
+typedef struct			s_map
 {
-	char			*name;
-	int				**map;
-	int				rows;
-	int				cols;
-}					t_map;
+	char				*name;
+	int					**map;
+	int					rows;
+	int					cols;
+}						t_map;
 
-typedef struct		s_player
+typedef struct			s_player
 {
-	double			x;
-	double			y;
-	double			dir_x;
-	double			dir_y;
-	double			plane_x;
-	double			plane_y;
-	double			spawn_x;
-	double			spawn_y;
-	double			move_speed;
-	double			rotation_speed;
-	int				cam_height;
-	int				crouching;
-	int				busy;
-	double			vertical_fov;
-}					t_player;
+	double				x;
+	double				y;
+	double				dir_x;
+	double				dir_y;
+	double				plane_x;
+	double				plane_y;
+	double				spawn_x;
+	double				spawn_y;
+	double				move_speed;
+	double				rotation_speed;
+	int					cam_height;
+	int					crouching;
+	int					busy;
+	double				vertical_fov;
+}						t_player;
 
-typedef struct		s_input
+typedef struct			s_input
 {
-	int				up;
-	int				down;
-	int				right;
-	int				left;
-	int				jump;
-	int				crouch;
-}					t_input;
+	int					up;
+	int					down;
+	int					right;
+	int					left;
+	int					jump;
+	int					crouch;
+}						t_input;
 
-typedef struct		s_sdl
+typedef struct			s_sdl
 {
-	SDL_Window		*window;
-	SDL_Surface		*screen;
-	SDL_Event		e;
-	int				img_flags;
-	SDL_Renderer	*renderer;
-	int				p_spawn_point;
-	t_map			*map;
-	t_player		*player;
-	TTF_Font		*font;
-	SDL_Surface		*text_surface;
-	double			time_prev;
-	double			time_now;
-	unsigned int	*tex;
-	t_input			input;
-	int				pixelation;
-	SDL_Surface		**textures;
-	double			wall_dist;
-	int				loading_done;
-	int				textures_amount;
-}					t_sdl;
+	SDL_Window			*window;
+	SDL_Surface			*screen;
+	SDL_Event			e;
+	int					img_flags;
+	SDL_Renderer		*renderer;
+	int					p_spawn_point;
+	t_map				*map;
+	t_player			*player;
+	TTF_Font			*font;
+	SDL_Surface			*text_surface;
+	double				time_prev;
+	double				time_now;
+	unsigned int		*tex;
+	t_input				input;
+	int					pixelation;
+	SDL_Surface			**textures;
+	double				wall_dist;
+	int					loading_done;
+	int					textures_amount;
+}						t_sdl;
 
-void	handle_arguments(t_sdl *sdl, int argc, char **argv);
-
-void	handle_error(char *message);
-
-void	print_map(t_map *map);
-
-void	player_jump(t_player *player, int *input_jump);
-
-void	player_crouch(t_player *player, int crouch);
-
-void	modify_pixel_multiply(SDL_Surface *screen, int x, int y, double amount);
-
-void	modify_pixel_remove(SDL_Surface *screen, int x, int y, int color);
-
-void	modify_pixel_add(SDL_Surface *screen, int x, int y, int color);
-
-void	add_fog_to_pixel(SDL_Surface *screen, int x, int y, double wall_dist);
-
-void	put_pixel(SDL_Surface *screen, int x, int y, int color);
-
-void	draw_line(t_sdl *sdl, int x[2], int y[2], int color);
-
-void	check_count(int count, t_map *s_map);
-
-int		count_ints(char *line, t_map *s_map);
-
-void	check_line(char *line);
-
-int		bigger_than_int(char *line);
+void					handle_arguments(t_sdl *sdl, int argc, char **argv);
+void					handle_error(char *message);
+void					print_map(t_map *map);
+void					player_jump(t_player *player, int *input_jump);
+void					player_crouch(t_player *player, int crouch);
+void					modify_pixel_multiply(SDL_Surface *screen,
+												int x, int y, double amount);
+void					modify_pixel_remove(SDL_Surface *screen,
+												int x, int y, int color);
+void					modify_pixel_add(SDL_Surface *screen,
+												int x, int y, int color);
+void					add_fog_to_pixel(SDL_Surface *screen,
+												int x, int y, double wall_dist);
+void					put_pixel(SDL_Surface *screen,
+												int x, int y, int color);
+void					draw_line(t_sdl *sdl, int x[2], int y[2], int color);
+void					check_count(int count, t_map *s_map);
+int						count_ints(char *line, t_map *s_map);
+void					check_line(char *line);
+int						bigger_than_int(char *line);
 
 #endif
