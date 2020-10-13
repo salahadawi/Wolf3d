@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/14 13:47:23 by sadawi            #+#    #+#             */
-/*   Updated: 2020/10/13 13:47:19 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/10/13 13:52:29 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,13 @@ void	store_map_line(char *line, t_map *s_map)
 {
 	int	i;
 	int	col;
-	int	count;
 	int	number;
 
 	i = 0;
 	col = 0;
 	check_line(line);
-	count = count_ints(line, s_map);
-	if (!(s_map->map[s_map->rows] = (int*)ft_memalloc(sizeof(int) * count)))
+	if (!(s_map->map[s_map->rows] = (int*)ft_memalloc(sizeof(int) *
+	count_ints(line, s_map))))
 		handle_error("Malloc failed");
 	while (line[i])
 	{
@@ -54,8 +53,7 @@ void	store_map_line(char *line, t_map *s_map)
 			number = ft_atoi(&line[i]);
 		else
 			break ;
-		if (number > s_map->max_num)
-			s_map->max_num = number;
+		s_map->max_num = number > s_map->max_num ? number : s_map->max_num;
 		s_map->map[s_map->rows][col++] = number;
 		while (line[i] != ' ' && line[i])
 			i++;
