@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_map.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/14 13:47:23 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/19 00:00:48 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/10/13 13:47:19 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	store_map_line(char *line, t_map *s_map)
 			i++;
 		if (line[i])
 			number = ft_atoi(&line[i]);
+		else
+			break ;
 		if (number > s_map->max_num)
 			s_map->max_num = number;
 		s_map->map[s_map->rows][col++] = number;
