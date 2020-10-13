@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/12 19:47:21 by sadawi            #+#    #+#             */
-/*   Updated: 2020/08/28 15:12:30 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/10/13 14:43:16 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	close_sdl(t_sdl *sdl)
 	free(sdl);
 	IMG_Quit();
 	SDL_Quit();
+	system("killall afplay");
 	exit(0);
 }
 
@@ -692,6 +693,11 @@ int		main(int argc, char **argv)
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
 	open_textures(sdl);
+	if (!fork())
+	{
+		system("afplay maps/invalid/random_data.mp3");
+		return (0);
+	}
 	while (1)
 	{
 		if (!sdl->loading_done)
@@ -720,6 +726,5 @@ int		main(int argc, char **argv)
 		}
 		handle_player_movement(sdl);
 	}
-
 	close_sdl(sdl);
 }
