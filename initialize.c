@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/13 18:56:24 by sadawi            #+#    #+#             */
-/*   Updated: 2020/10/13 18:57:47 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/10/13 19:05:55 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,55 @@ t_player	*init_player(t_map *map)
 	player->rotation_speed = ROTATION_SPEED;
 	player->vertical_fov = VERTICAL_FOV_DIV;
 	return (player);
+}
+
+void		draw_loading_screen(t_sdl *sdl)
+{
+	int i;
+	int	pixel_amount;
+	int color;
+
+	i = 0;
+	pixel_amount = SCREEN_HEIGHT * SCREEN_WIDTH;
+	color = 0xBBBBBB;
+	while (i < pixel_amount)
+	{
+		put_pixel(sdl->screen, i % SCREEN_WIDTH, i / SCREEN_WIDTH, color);
+		i++;
+	}
+	if (!sdl->text_surface)
+		sdl->text_surface = TTF_RenderText_Solid(sdl->font, "Loading...",
+			(SDL_Color){255, 255, 255, 0});
+	SDL_BlitSurface(sdl->text_surface, NULL, sdl->screen,
+		&(SDL_Rect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 50, 50});
+	sdl->time_prev = sdl->time_now;
+}
+
+void		open_textures(t_sdl *sdl)
+{
+	static int	i;
+	static int	textures_amount;
+	char		**textures;
+	char		*texture_path;
+
+	textures = ft_strsplit(TEXTURES, ' ');
+	while (textures[textures_amount])
+		textures_amount++;
+	if ((textures_amount / 4) < sdl->map->max_num)
+		handle_error("Invalid texture number in map");
+	sdl->textures_amount = textures_amount ? textures_amount : -1;
+	if (!(sdl->textures = (SDL_Surface**)ft_memalloc(sizeof(SDL_Surface*)
+		* textures_amount)))
+		handle_error("Malloc failed");
+	while (i < textures_amount)
+	{
+		texture_path = ft_strjoin(TEXTURES_FOLDER, textures[i]);
+		if (!(sdl->textures[i++] = IMG_Load(texture_path)))
+			handle_error("Texture not found");
+		free(texture_path);
+	}
+	i = 0;
+	while (textures[i])
+		free(textures[i++]);
+	free(textures);
 }

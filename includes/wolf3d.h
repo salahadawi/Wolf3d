@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/10/13 17:57:07 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/10/13 19:09:05 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,5 +207,21 @@ void					calculate_ray_pos(t_sdl *sdl, int x);
 void					calculate_perpendicular_dist(t_sdl *sdl);
 void					calculate_line_height(t_sdl *sdl);
 void					calculate_texture_x(t_sdl *sdl);
+void					handle_keys_down(t_sdl *sdl);
+void					handle_keys_up(t_sdl *sdl);
+void					handle_keys(t_sdl *sdl);
+void					open_textures(t_sdl *sdl);
+void					draw_loading_screen(t_sdl *sdl);
+void					draw_fps(t_sdl *sdl);
+void					handle_frame(t_sdl *sdl);
+void					clear_surface(SDL_Surface *surface);
+void					get_map_box(t_sdl *sdl);
+void					update_player_speed(t_sdl *sdl);
+void					draw_background(t_sdl *sdl);
+void					draw_map(t_sdl *sdl);
+void					draw_background(t_sdl *sdl);
+void					draw_map(t_sdl *sdl);
+void					find_nearest_wall(t_sdl *sdl);
+void					calculate_side_dist(t_sdl *sdl);
 
 #endif
