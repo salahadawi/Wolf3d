@@ -1,5 +1,16 @@
-#include "wolf3d.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   player_turning.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/10/13 18:56:41 by sadawi            #+#    #+#             */
+/*   Updated: 2020/10/13 18:57:25 by sadawi           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "wolf3d.h"
 
 void	player_turn_right(t_player *player, double old_dir_x,
 							double old_plane_x)
