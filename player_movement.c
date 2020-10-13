@@ -6,7 +6,7 @@
 /*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/17 17:34:04 by alcohen           #+#    #+#             */
-/*   Updated: 2020/08/21 12:02:16 by sadawi           ###   ########.fr       */
+/*   Updated: 2020/10/13 17:46:02 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,66 @@ void	player_crouch(t_player *player, int crouch)
 		player->busy = 0;
 		player->cam_height = 0;
 		player->crouching = 0;
+	}
+}
+
+void	player_walk_forward(t_player *player, t_map *map)
+{
+	if (player->y + player->dir_y *
+			player->move_speed + (player->dir_y > 0 ? 0.3 : -0.3) <
+			map->rows && player->y + player->dir_y * player->move_speed +
+			(player->dir_y > 0 ? 0.3 : -0.3) > 0)
+		if (map->map[(int)(player->y +
+			player->dir_y * player->move_speed +
+			(player->dir_y >
+			0 ? 0.3 : -0.3))][(int)(player->x)] < 1)
+			player->y += player->dir_y *
+			player->move_speed;
+	if (player->x + player->dir_x *
+			player->move_speed + (player->dir_x > 0 ? 0.3 : -0.3) <
+			map->cols && player->x + player->dir_x *
+			player->move_speed + (player->dir_x >
+			0 ? 0.3 : -0.3) > 0)
+		if (map->map[(int)(player->y)][(int)(player->x
+			+ player->dir_x * player->move_speed +
+			(player->dir_x > 0 ? 0.3 : -0.3))] < 1)
+			player->x += player->dir_x *
+			player->move_speed;
+}
+
+void	player_walk_backward(t_player *player, t_map *map)
+{
+	if (player->y - player->dir_y *
+			player->move_speed - (player->dir_y > 0 ? 0.3 : -0.3) <
+			map->rows && player->y -
+			player->dir_y * player->move_speed -
+			(player->dir_y > 0 ? 0.3 : -0.3) > 0)
+		if (map->map[(int)(player->y -
+			player->dir_y * player->move_speed -
+			(player->dir_y >
+			0 ? 0.3 : -0.3))][(int)(player->x)] < 1)
+			player->y -= player->dir_y *
+			player->move_speed;
+	if (player->x - player->dir_x *
+		player->move_speed - (player->dir_x > 0 ? 0.3 : -0.3) <
+			map->cols && player->x -
+				player->dir_x * player->move_speed -
+					(player->dir_x > 0 ? 0.3 : -0.3) > 0)
+		if (map->map[(int)(player->y)][(int)(player->x
+			- player->dir_x * player->move_speed -
+				(player->dir_x > 0 ? 0.3 : -0.3))] < 1)
+			player->x -= player->dir_x *
+				player->move_speed;
+}
+
+void	handle_player_walking(t_sdl *sdl)
+{
+	if (sdl->input.up)
+	{
+		player_walk_forward(sdl->player, sdl->map);
+	}
+	if (sdl->input.down)
+	{
+		player_walk_backward(sdl->player, sdl->map);
 	}
 }

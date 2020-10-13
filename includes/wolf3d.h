@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/17 16:27:35 by sadawi            #+#    #+#             */
-/*   Updated: 2020/09/08 15:41:29 by alcohen          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:57:07 by sadawi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 ** For example a map block '5' means TEXTURES must have 20 textures
 */
 
-# define TEXTURES "wall.png stone.png alex.png white.png ice.png ice.png ice.png ice.png fabric.png"
+# define TEXTURES "wall.png stone.png alex.png white.png"
 
 # define TEXTURES_FOLDER "textures/"
 # define LIGHTING_INTENSITY 1
@@ -98,6 +98,31 @@ typedef struct			s_input
 	int					crouch;
 }						t_input;
 
+typedef struct			s_math
+{
+	int		wall_side;
+	int		texture_x;
+	int		map_x;
+	int		map_y;
+	double	camera_x;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	side_dist_x;
+	double	side_dist_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	double	perpendicular_wall_dist;
+	int		step_x;
+	int		step_y;
+	int		hit;
+	int		side;
+	int		line_height;
+	int		draw_start;
+	int		draw_end;
+	double	wall_x;
+	int		tex_idx;
+}						t_math;
+
 typedef struct			s_sdl
 {
 	SDL_Window			*window;
@@ -119,8 +144,12 @@ typedef struct			s_sdl
 	double				wall_dist;
 	int					loading_done;
 	int					textures_amount;
+	t_math				math;
 }						t_sdl;
 
+t_sdl					*init(void);
+void					set_spawn_point(t_player *player, t_map *map);
+t_player				*init_player(t_map *map);
 void					handle_arguments(t_sdl *sdl, int argc, char **argv);
 void					handle_error(char *message);
 void					print_map(t_map *map);
@@ -141,5 +170,42 @@ void					check_count(int count, t_map *s_map);
 int						count_ints(char *line, t_map *s_map);
 void					check_line(char *line);
 int						bigger_than_int(char *line);
+void					player_turn_right(t_player *player, double old_dir_x,
+															double old_plane_x);
+void					player_turn_left(t_player *player, double old_dir_x,
+															double old_plane_x);
+void					player_walk_forward(t_player *player, t_map *map);
+void					player_walk_backward(t_player *player, t_map *map);
+void					play_music_in_separate_process();
+void					draw_vertical_line_from_image(t_sdl *sdl,
+														SDL_Surface *texture,
+														int x[2], int y[2]);
+int						get_pixel(SDL_Surface *screen, int x, int y);
+void					draw_x(t_sdl *sdl, int x);
+void					draw_out_of_bounds_line(t_sdl *sdl, int x);
+void					draw_map_line(t_sdl *sdl, int x);
+void					draw_vertical_line(t_sdl *sdl, int x, int y[2],
+											int color);
+void					draw_box(SDL_Surface *screen, int xywh[4], int color,
+									void (*f)(SDL_Surface*, int, int, int));
+void					draw_minimap_map(t_sdl *sdl);
+void					draw_minimap_fov_cone(t_sdl *sdl);
+void					draw_minimap(t_sdl *sdl);
+void					put_minimap_pixel(SDL_Surface *screen, int x, int y,
+									int color);
+void					close_sdl(t_sdl *sdl);
+void					handle_error(char *message);
+void					handle_error_sdl(char *message);
+void					handle_player_turning(t_sdl *sdl);
+void					player_turn_left(t_player *player, double old_dir_x,
+							double old_plane_x);
+void					player_turn_right(t_player *player, double old_dir_x,
+							double old_plane_x);
+void					handle_player_walking(t_sdl *sdl);
+void					calculate_ray_len(t_sdl *sdl);
+void					calculate_ray_pos(t_sdl *sdl, int x);
+void					calculate_perpendicular_dist(t_sdl *sdl);
+void					calculate_line_height(t_sdl *sdl);
+void					calculate_texture_x(t_sdl *sdl);
 
 #endif

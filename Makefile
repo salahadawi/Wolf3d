@@ -3,15 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alcohen <alcohen@student.hive.fi>          +#+  +:+       +#+         #
+#    By: sadawi <sadawi@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/04/10 19:26:38 by sadawi            #+#    #+#              #
-#    Updated: 2020/09/01 12:08:26 by alcohen          ###   ########.fr        #
+#    Updated: 2020/10/13 17:53:25 by sadawi           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wolf3d
-SRCS = main.c handle_map.c player_movement.c modify_pixels.c draw_line.c map_helpers.c
+SRCS =	main.c handle_map.c player_movement.c modify_pixels.c draw_line.c \
+		map_helpers.c draw_view.c minimap.c error_exit_handling.c \
+		player_turning.c raycasting.c pixel_operations.c initialize.c
 INCLUDES_LINUX = `sdl2-config --cflags --libs` -I libft/includes -I includes
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
