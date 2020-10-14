@@ -1,1 +1,4 @@
 *.o
+wolf3d
+*.a
+*.swp
