@@ -11,11 +11,12 @@
 # **************************************************************************** #
 
 NAME = wolf3d
-SRCS =	main.c handle_map.c player_movement.c modify_pixels.c draw_line.c \
+CFILES = main.c handle_map.c player_movement.c modify_pixels.c draw_line.c \
 		map_helpers.c draw_view.c minimap.c error_exit_handling.c \
 		player_turning.c raycasting.c pixel_operations.c initialize.c \
 		handle_keys.c extra_helpers.c extra_helpers_2.c draw_view_lines.c \
 		raycasting_2.c
+SRCS=$(addprefix src/, $(CFILES))
 INCLUDES_LINUX = `sdl2-config --cflags --libs` -I libft/includes -I includes
 FLAGS = -Wall -Wextra -Werror -O3
 RUN_LIB = make --no-print-directory -C libft/
