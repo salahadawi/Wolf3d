@@ -176,7 +176,6 @@ void					player_turn_left(t_player *player, double old_dir_x,
 															double old_plane_x);
 void					player_walk_forward(t_player *player, t_map *map);
 void					player_walk_backward(t_player *player, t_map *map);
-void					play_music_in_separate_process();
 void					draw_vertical_line_from_image(t_sdl *sdl,
 														SDL_Surface *texture,
 														int x[2], int y[2]);

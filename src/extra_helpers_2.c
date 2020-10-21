@@ -12,15 +12,6 @@
 
 #include "wolf3d.h"
 
-void	play_music_in_separate_process(void)
-{
-	if (!fork())
-	{
-		system("afplay audio/bg_music.mp3");
-		exit(0);
-	}
-}
-
 void	update_player_speed(t_sdl *sdl)
 {
 	sdl->time_prev = sdl->time_now;
