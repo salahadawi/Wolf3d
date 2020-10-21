@@ -35,7 +35,6 @@ int		main(int argc, char **argv)
 	sdl->player = init_player(sdl->map);
 	print_map(sdl->map);
 	open_textures(sdl);
-	play_music_in_separate_process();
 	while (1)
 	{
 		if (!sdl->loading_done)

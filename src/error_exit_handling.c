@@ -31,6 +31,5 @@ void	close_sdl(t_sdl *sdl)
 	SDL_DestroyWindow(sdl->window);
 	IMG_Quit();
 	SDL_Quit();
-	system("killall afplay");
 	exit(0);
 }
