@@ -1,4 +1,6 @@
 # Wolf3d
+![](Wolf3d_gif.gif)
+
 3D raycasting project from scratch in C.
 
 The goal is to create a "first person shooter" style maze where the player can move around.
